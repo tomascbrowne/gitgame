@@ -1,0 +1,1 @@
+The aim of this project is to create an online simulation game that teaches collaborative code sharing strategies for Git
