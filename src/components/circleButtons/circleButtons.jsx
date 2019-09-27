@@ -3,9 +3,13 @@ import "./circleButtons.css";
 import Button from "react-bootstrap/Button";
 
 class CircleButtons extends Component {
-  state = {};
+  state = { value: this.props.value };
   render() {
-    return <Button variant="primary" />;
+    return (
+      <Button className="btn-lg" variant="primary">
+        {this.state.value}
+      </Button>
+    );
   }
 }
 

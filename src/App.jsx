@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import MenuButtons from "./components/menuButtons";
+import MenuButtons from "./components/menuButtons/menuButtons";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -10,12 +10,12 @@ import logoImage from "./logo/Menu-logo.jpg";
 
 const App = () => {
   return (
-    <Container style={{ height: "100%" }}>
-      <Row>
-        <Col>
+    <Container>
+      <Row style={{ height: "100vh" }}>
+        <Col className="md-6 lg-6">
           <MenuButtons />
         </Col>
-        <Col>
+        <Col className="md-6 lg-6">
           <Image src={logoImage} />
         </Col>
       </Row>
