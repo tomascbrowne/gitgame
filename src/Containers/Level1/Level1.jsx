@@ -20,6 +20,7 @@ class level1 extends Component {
     this.setState({ tree: image });
   };
 
+  // https://stackoverflow.com/questions/42118296/dynamically-import-images-from-a-directory-using-webpack function influenced by this person
   importAll = r => {
     let images = {};
     r.keys().map((item, index) => {
@@ -42,14 +43,6 @@ class level1 extends Component {
     const images = this.importAll(
       require.context("./images", false, /\.(png|jpe?g|svg)$/)
     );
-    // for (const i = 0; i < vertices.length; i++) {
-    //   graph.addVertex(vertices.nodes[i]);
-    // }
-    // for (const i = 0; i < vertices.nodes.length; i++) {
-    //   for (const j = 0; j < vertices.nodes[i].Edges.length; j++) {
-    //     graph.addEdge(vertices.nodes[i].ID, vertices.nodes[i].Edges[j].ID);
-    //   }
-    // }
 
     const items = [];
     for (
@@ -68,16 +61,6 @@ class level1 extends Component {
       );
     }
 
-    // let image = "./tree";
-    // image += vertices.nodes[this.state.currentNode].ID;
-    // image += ".png";
-    // console.log(image);
-
-    // let image = this.state.tree;
-    // image += vertices.nodes[this.state.currentNode].ID;
-    // image += ".png";
-    // this.setState({ tree: image });
-
     let image = this.state.tree;
     image += ".png";
 
@@ -85,10 +68,6 @@ class level1 extends Component {
       <>
         <Row className="d-flex flex-row align-self-center p-2 h-100">
           <Col className="d-flex flex-column align-self-center">
-            <div style={style}>
-              <h1>{image}</h1>
-              <h2>{images.length}</h2>
-            </div>
             <img src={images[image]} />
           </Col>
 
