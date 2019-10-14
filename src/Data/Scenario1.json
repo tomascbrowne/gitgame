@@ -1,0 +1,64 @@
+{
+  "nodes": [
+    {
+      "ID": 0,
+      "Description": "You want to merge in your finished feature branch",
+      "Edges": [
+        { "OptionText": "Create a pull request", "ID": 1 },
+        { "OptionText": "Merge development into your branch", "ID": 2 },
+        { "OptionText": "Merge your branch directly into development", "ID": 3 }
+      ]
+    },
+    {
+      "ID": 1,
+      "Description": "Git notifies you that there is a merge conflict in the pull request",
+      "Edges": [
+        {
+          "OptionText": "Fix the code, push the branch (pull req is automatically updated)",
+          "ID": 4
+        }
+      ]
+    },
+    {
+      "ID": 2,
+      "Description": "Conflicts come up",
+      "Edges": [
+        { "OptionText": "Fix conflicts then create a pull request", "ID": 4 },
+        { "OptionText": "Fix conflicts merge branch into master", "ID": 5 },
+        {
+          "OptionText": "fix conflicts then merge your branch back into development",
+          "ID": 6
+        }
+      ]
+    },
+    {
+      "ID": 3,
+      "Description": "Conflicts come up",
+      "Edges": [
+        { "OptionText": "Fix conflicts then push", "ID": 4 },
+        { "OptionText": "abort the merge", "ID": 0 },
+        { "OptionText": "delete branch", "ID": 7 }
+      ]
+    },
+    {
+      "ID": 4,
+      "Description": "Complete!",
+      "Edges": []
+    },
+    {
+      "ID": 5,
+      "Description": "Bad choice",
+      "Edges": []
+    },
+    {
+      "ID": 6,
+      "Description": "You fix the conflicts and check the code works as expected, you merge back into development and all is good!",
+      "Edges": []
+    },
+    {
+      "ID": 7,
+      "Description": "why?!",
+      "Edges": []
+    }
+  ]
+}

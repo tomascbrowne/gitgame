@@ -8,7 +8,9 @@ const optionSelectionButton = props => {
   };
   return (
     <div className="d-inline p-2">
-      <button style={style}>{buttonText}</button>
+      <button onClick={props.click} style={style}>
+        {buttonText}
+      </button>
     </div>
   );
 };
