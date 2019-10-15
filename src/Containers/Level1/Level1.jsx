@@ -3,7 +3,7 @@ import { Row, Col } from "react-bootstrap";
 import OptionButton from "../../components/optionSelectionButton/optionSelectionButton";
 import Scenario from "../../Data/Scenario1.json";
 import Graph from "../../Graph/Graph";
-import Image from "react-bootstrap/Image";
+import NarativeBox from "../../components/narativeBox/narativeBox";
 
 class level1 extends Component {
   state = {
@@ -30,34 +30,29 @@ class level1 extends Component {
   };
 
   render() {
-    const style = {
-      backgroundColor: "white",
-      font: "inherit",
-      border: "1px solid grey",
-      padding: "8px",
-      alignText: "center"
-    };
     console.log(JSON.parse(JSON.stringify(Scenario)));
-    const graph = new Graph(7);
+    //const graph = new Graph(7);
     const vertices = JSON.parse(JSON.stringify(Scenario));
     const images = this.importAll(
       require.context("./images", false, /\.(png|jpe?g|svg)$/)
     );
 
-    const items = [];
+    const buttons = [];
     for (
       let i = 0;
       i < vertices.nodes[this.state.currentNode].Edges.length;
       i++
     ) {
-      items.push(
-        <OptionButton
-          click={this.optionButtonClickHandler.bind(
-            this,
-            vertices.nodes[this.state.currentNode].Edges[i].ID
-          )}
-          text={vertices.nodes[this.state.currentNode].Edges[i].OptionText}
-        />
+      buttons.push(
+        <div>
+          <OptionButton
+            click={this.optionButtonClickHandler.bind(
+              this,
+              vertices.nodes[this.state.currentNode].Edges[i].ID
+            )}
+            text={vertices.nodes[this.state.currentNode].Edges[i].OptionText}
+          />
+        </div>
       );
     }
 
@@ -71,12 +66,11 @@ class level1 extends Component {
             <img src={images[image]} />
           </Col>
 
-          <Col className="d-flex flex-column align-self-center">
-            <div style={style}>
-              <h1>{vertices.nodes[this.state.currentNode].Description}</h1>
-              {/* <NarativeBox style={style} /> */}
-            </div>
-            <div className="align-self-center p-3">{items}</div>
+          <Col>
+            <NarativeBox
+              text={vertices.nodes[this.state.currentNode].Description}
+            />
+            {buttons}
           </Col>
         </Row>
       </>
