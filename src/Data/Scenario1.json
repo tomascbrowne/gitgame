@@ -7,7 +7,8 @@
         { "OptionText": "Create a pull request", "ID": 1 },
         { "OptionText": "Merge development into your branch", "ID": 2 },
         { "OptionText": "Merge your branch directly into development", "ID": 3 }
-      ]
+      ],
+      "Image": "tree0.png"
     },
     {
       "ID": 1,
@@ -17,7 +18,8 @@
           "OptionText": "Fix the code, push the branch (pull req is automatically updated)",
           "ID": 4
         }
-      ]
+      ],
+      "Image": "tree01.png"
     },
     {
       "ID": 2,
@@ -29,7 +31,8 @@
           "OptionText": "fix conflicts then merge your branch back into development",
           "ID": 6
         }
-      ]
+      ],
+      "Image": "tree02.png"
     },
     {
       "ID": 3,
@@ -38,22 +41,26 @@
         { "OptionText": "Fix conflicts then push", "ID": 4 },
         { "OptionText": "abort the merge", "ID": 0 },
         { "OptionText": "delete branch", "ID": 7 }
-      ]
+      ],
+      "Image": "tree03.png"
     },
     {
       "ID": 4,
       "Description": "Complete!",
-      "Edges": []
+      "Edges": [],
+      "Image": "tree014.png"
     },
     {
       "ID": 5,
       "Description": "Bad choice",
-      "Edges": []
+      "Edges": [],
+      "Image": "tree025.png"
     },
     {
       "ID": 6,
       "Description": "You fix the conflicts and check the code works as expected, you merge back into development and all is good!",
-      "Edges": []
+      "Edges": [],
+      "Image": "tree026.png"
     },
     {
       "ID": 7,

@@ -1,0 +1,32 @@
+{
+  "nodes": [
+    {
+      "ID": 0,
+      "Description": "You decide to merge a feature banch into dev and choose to NOT fast foward merge",
+      "Edges": [
+        { "OptionText": "postion 1", "ID": 1, "Image": "tree0op1.png" },
+        { "OptionText": "position 2", "ID": 2, "Image": "tree0op2.png" },
+        { "OptionText": "position 3", "ID": 3, "Image": "tree0op3.png" }
+      ],
+      "Image": "tree0.png"
+    },
+    {
+      "ID": 1,
+      "Description": "The “no-fast-forward” merge option preserves the branch history and creates a merge commit",
+      "Edges": [],
+      "Image": "correct.png"
+    },
+    {
+      "ID": 2,
+      "Description": "The “fast-forward” (“–ff”) merge option is the default merge option (when possible). In the git log, the branch history for this merge will not be available anymore, rewrites the git history!",
+      "Edges": [],
+      "Image": "incorrect.png"
+    },
+    {
+      "ID": 3,
+      "Description": "You are merging, not creating and pushing a new commit to the same branch?",
+      "Edges": [],
+      "Image": "incorrect.png"
+    }
+  ]
+}
