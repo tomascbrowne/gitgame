@@ -8,7 +8,7 @@
         { "OptionText": "Merge development into your branch", "ID": 2 },
         { "OptionText": "Merge your branch directly into development", "ID": 3 }
       ],
-      "Image": "tree0.png"
+      "Image": "tree0"
     },
     {
       "ID": 1,
@@ -19,7 +19,7 @@
           "ID": 4
         }
       ],
-      "Image": "tree01.png"
+      "Image": "tree01"
     },
     {
       "ID": 2,
@@ -32,7 +32,7 @@
           "ID": 6
         }
       ],
-      "Image": "tree02.png"
+      "Image": "tree02"
     },
     {
       "ID": 3,
@@ -42,25 +42,25 @@
         { "OptionText": "abort the merge", "ID": 0 },
         { "OptionText": "delete branch", "ID": 7 }
       ],
-      "Image": "tree03.png"
+      "Image": "tree03"
     },
     {
       "ID": 4,
       "Description": "Complete!",
       "Edges": [],
-      "Image": "tree014.png"
+      "Image": "tree014"
     },
     {
       "ID": 5,
       "Description": "Bad choice",
       "Edges": [],
-      "Image": "tree025.png"
+      "Image": "tree025"
     },
     {
       "ID": 6,
       "Description": "You fix the conflicts and check the code works as expected, you merge back into development and all is good!",
       "Edges": [],
-      "Image": "tree026.png"
+      "Image": "tree026"
     },
     {
       "ID": 7,

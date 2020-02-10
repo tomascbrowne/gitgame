@@ -1,0 +1,71 @@
+{
+  "nodes": [
+    {
+      "ID": 0,
+      "Description": "You are working in your local repository and notice a file has local changes. You decide you don't want these changes and want to delete the file and restore it to its previous verision from index. ",
+      "Edges": [
+        { "OptionText": "git reset --hard", "ID": 1 },
+        { "OptionText": "git checkout HEAD^ src/", "ID": 2 },
+        { "OptionText": "git checkout -- path/to/foo", "ID": 3 }
+      ],
+      "Image": "tree0"
+    },
+    {
+      "ID": 1,
+      "Description": "All uncommitted changes on your current working branch (local changes) are lost",
+      "Edges": [
+        {
+          "OptionText": "Go back",
+          "ID": 0
+        }
+      ],
+      "Image": "tree01"
+    },
+    {
+      "ID": 2,
+      "Description": "You are now in detached HEAD state, detached head means you are no longer on a branch, you have checked out a single commit in the history",
+      "Edges": [
+        { "OptionText": "git checkout [previous working branch]", "ID": 4 },
+        { "OptionText": "git checkout HEAD^ src/", "ID": 5 },
+        {
+          "OptionText": "git checkout master",
+          "ID": 6
+        }
+      ],
+      "Image": "tree02"
+    },
+    {
+      "ID": 3,
+      "Description": "Conflicts come up",
+      "Edges": [
+        { "OptionText": "Fix conflicts then push", "ID": 4 },
+        { "OptionText": "abort the merge", "ID": 0 },
+        { "OptionText": "delete branch", "ID": 7 }
+      ],
+      "Image": "tree03"
+    },
+    {
+      "ID": 4,
+      "Description": "Complete!",
+      "Edges": [],
+      "Image": "tree014"
+    },
+    {
+      "ID": 5,
+      "Description": "Bad choice",
+      "Edges": [],
+      "Image": "tree025"
+    },
+    {
+      "ID": 6,
+      "Description": "You fix the conflicts and check the code works as expected, you merge back into development and all is good!",
+      "Edges": [],
+      "Image": "tree026"
+    },
+    {
+      "ID": 7,
+      "Description": "why?!",
+      "Edges": []
+    }
+  ]
+}
