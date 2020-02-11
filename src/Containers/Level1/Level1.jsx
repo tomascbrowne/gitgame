@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Row, Col } from "react-bootstrap";
 import OptionButton from "../../components/optionSelectionButton/optionSelectionButton";
 import Scenario from "../../Data/Scenario1.json";
-import Graph from "../../Graph/Graph";
 import NarativeBox from "../../components/narativeBox/narativeBox";
 import { Gitgraph, Mode } from "@gitgraph/react";
 
@@ -19,8 +18,7 @@ class level1 extends Component {
 
   optionButtonClickHandler = ID => {
     console.log("Button clicked");
-    const clearTree = this.state.treeObject;
-    clearTree.clear();
+    //const clearTree = this.state.treeObject;
 
     const current = ID;
     let image = this.state.tree;
@@ -50,8 +48,6 @@ class level1 extends Component {
 
           feature.commit("Added some cool stuff");
           feature.commit("Added some other cool stuff");
-
-          this.setState({ treeObject: baseTree });
         }}
       </Gitgraph>
     );
@@ -86,7 +82,6 @@ class level1 extends Component {
               name: "CONFLICT",
               style: customTagStyle
             });
-            this.setState({ treeObject: tree01 });
           }}
         </Gitgraph>
       </>
@@ -121,7 +116,6 @@ class level1 extends Component {
             name: "Success!",
             style: customTagStyle
           });
-          this.setState({ treeObject: tree014 });
         }}
       </Gitgraph>
     );
@@ -154,7 +148,6 @@ class level1 extends Component {
             name: "CONFLICT",
             style: customTagStyle
           });
-          this.setState({ treeObject: tree02 });
         }}
       </Gitgraph>
     );
@@ -188,7 +181,6 @@ class level1 extends Component {
             name: "CONFLICT",
             style: customTagStyle
           });
-          this.setState({ treeObject: tree03 });
         }}
       </Gitgraph>
     );
@@ -222,7 +214,6 @@ class level1 extends Component {
             name: "Success!",
             style: customTagStyle
           });
-          this.setState({ treeObject: tree024 });
         }}
       </Gitgraph>
     );
@@ -245,8 +236,6 @@ class level1 extends Component {
           feature.commit("Added some other cool stuff");
 
           master.merge(feature, "Merged in feature");
-
-          this.setState({ treeObject: tree025 });
         }}
       </Gitgraph>
     );
@@ -280,8 +269,6 @@ class level1 extends Component {
             name: "Success!",
             style: customTagStyle
           });
-
-          this.setState({ treeObject: tree026 });
         }}
       </Gitgraph>
     );
@@ -302,9 +289,7 @@ class level1 extends Component {
   };
 
   render() {
-    //const graph = new Graph(7);
     const vertices = JSON.parse(JSON.stringify(Scenario));
-    // images = this.setGraphs();
 
     const buttons = [];
     for (
@@ -332,8 +317,7 @@ class level1 extends Component {
         <Row className="d-flex flex-row align-self-center p-2 h-100">
           <Col className="d-flex flex-column align-self-center">
             {this.graphs.get(this.state.tree)}
-            {this.state.tree}
-            {/* <button onClick={this.clearMethod}>force clear</button> */}
+            {this.graphs.get("tree026")}
           </Col>
 
           <Col>

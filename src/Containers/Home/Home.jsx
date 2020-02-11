@@ -1,14 +1,13 @@
 import React, { Component } from "react";
-import { Gitgraph, Mode } from "@gitgraph/react";
+import { Gitgraph } from "@gitgraph/react";
 import { Redirect } from "react-router";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
 import logoImage from "./Menu-logo.jpg";
 import Container from "react-bootstrap/Container";
-import Navbar from "react-bootstrap/Navbar";
 
-class level3 extends Component {
+class home extends Component {
   state = {
     redirect: false,
     redirectPage: ""
@@ -35,20 +34,6 @@ class level3 extends Component {
         commit.hashAbbrev,
         " - ",
         commit.subject
-      );
-    };
-
-    var renderMessage = function(merge) {
-      return React.createElement(
-        "text",
-        {
-          y: merge.style.dot.size,
-          alignmentBaseline: "central",
-          fill: merge.style.dot.color
-        },
-        merge.hashAbbrev,
-        " - ",
-        merge.subject
       );
     };
 
@@ -136,4 +121,4 @@ class level3 extends Component {
   }
 }
 
-export default level3;
+export default home;

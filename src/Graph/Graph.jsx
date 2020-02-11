@@ -30,7 +30,7 @@ class Graph {
       // great the corresponding adjacency list
       // for the vertex
       const get_values = this.AdjList.get(i);
-      const conc = "";
+      let conc = "";
 
       // iterate over the adjacency list
       // concatenate the values into a string
