@@ -160,7 +160,6 @@ class level2 extends Component {
   };
 
   onHoverIn = Image => {
-    let img = Image;
     let prev = this.state.tree;
     this.setState({ tree: Image });
     this.setState({ previous: prev });

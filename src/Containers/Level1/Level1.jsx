@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Row, Col } from "react-bootstrap";
 import OptionButton from "../../components/optionSelectionButton/optionSelectionButton";
 import Scenario from "../../Data/Scenario1.json";
-import Graph from "../../Graph/Graph";
 import NarativeBox from "../../components/narativeBox/narativeBox";
 import { Gitgraph, Mode } from "@gitgraph/react";
 

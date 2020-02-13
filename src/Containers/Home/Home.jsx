@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import { Gitgraph, Mode } from "@gitgraph/react";
+import { Gitgraph } from "@gitgraph/react";
 import { Redirect } from "react-router";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
 import logoImage from "./Menu-logo.jpg";
 import Container from "react-bootstrap/Container";
-import Navbar from "react-bootstrap/Navbar";
 
 class level3 extends Component {
   state = {
@@ -35,20 +34,6 @@ class level3 extends Component {
         commit.hashAbbrev,
         " - ",
         commit.subject
-      );
-    };
-
-    var renderMessage = function(merge) {
-      return React.createElement(
-        "text",
-        {
-          y: merge.style.dot.size,
-          alignmentBaseline: "central",
-          fill: merge.style.dot.color
-        },
-        merge.hashAbbrev,
-        " - ",
-        merge.subject
       );
     };
 
@@ -113,7 +98,6 @@ class level3 extends Component {
   render() {
     let graphs = new Map();
     graphs = this.importAll();
-    console.log(this.state.redirect);
 
     if (this.state.redirect) {
       console.log("Entering redirect method");
