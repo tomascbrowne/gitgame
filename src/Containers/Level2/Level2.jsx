@@ -36,79 +36,87 @@ class level2 extends Component {
     };
 
     const tree0 = (
-      <Gitgraph options={options}>
-        {baseTree => {
-          const development = baseTree.branch("development");
+      <>
+        <Gitgraph options={options}>
+          {baseTree => {
+            const development = baseTree.branch("development");
 
-          development.commit("Add tests");
-          development.commit("Add tests 2");
+            development.commit("Add tests");
+            development.commit("Add tests 2");
 
-          const feature = development.branch("feature");
+            const feature = development.branch("feature");
 
-          feature.commit("Added some cool stuff");
-          feature.commit("Added some other cool stuff");
+            feature.commit("Added some cool stuff");
+            feature.commit("Added some other cool stuff");
 
-          this.setState({ treeObject: baseTree });
-        }}
-      </Gitgraph>
+            this.setState({ treeObject: baseTree });
+          }}
+        </Gitgraph>
+      </>
     );
     this.graphs.set("tree0", tree0);
 
     const tree01 = (
-      <Gitgraph options={options}>
-        {baseTree => {
-          const development = baseTree.branch("development");
+      <>
+        <Gitgraph options={options}>
+          {baseTree => {
+            const development = baseTree.branch("development");
 
-          development.commit("Add tests");
-          development.commit("Add tests 2");
+            development.commit("Add tests");
+            development.commit("Add tests 2");
 
-          const feature = development.branch("feature");
+            const feature = development.branch("feature");
 
-          feature.commit("Added some cool stuff");
-          feature.commit("Added some other cool stuff");
+            feature.commit("Added some cool stuff");
+            feature.commit("Added some other cool stuff");
 
-          feature.merge(development, "");
+            feature.merge(development, "");
 
-          this.setState({ treeObject: tree01 });
-        }}
-      </Gitgraph>
+            this.setState({ treeObject: tree01 });
+          }}
+        </Gitgraph>
+      </>
     );
     this.graphs.set("tree01", tree01);
 
     const tree02 = (
-      <Gitgraph options={options}>
-        {baseTree => {
-          const development = baseTree.branch("development");
+      <>
+        <Gitgraph options={options}>
+          {baseTree => {
+            const development = baseTree.branch("development");
 
-          development.commit("Add tests");
-          development.commit("Add tests 2");
+            development.commit("Add tests");
+            development.commit("Add tests 2");
 
-          development.commit("Added some cool stuff");
-          development.commit("Added some other cool stuff");
+            development.commit("Added some cool stuff");
+            development.commit("Added some other cool stuff");
 
-          this.setState({ treeObject: tree02 });
-        }}
-      </Gitgraph>
+            this.setState({ treeObject: tree02 });
+          }}
+        </Gitgraph>
+      </>
     );
     this.graphs.set("tree02", tree02);
 
     const tree03 = (
-      <Gitgraph options={options}>
-        {baseTree => {
-          const development = baseTree.branch("development");
+      <>
+        <Gitgraph options={options}>
+          {baseTree => {
+            const development = baseTree.branch("development");
 
-          development.commit("Add tests");
-          development.commit("Add tests 2");
+            development.commit("Add tests");
+            development.commit("Add tests 2");
 
-          const feature = development.branch("feature");
+            const feature = development.branch("feature");
 
-          feature.commit("Added some cool stuff");
-          feature.commit("Added some other cool stuff");
-          feature.commit("Merge?");
+            feature.commit("Added some cool stuff");
+            feature.commit("Added some other cool stuff");
+            feature.commit("Merge?");
 
-          this.setState({ treeObject: tree03 });
-        }}
-      </Gitgraph>
+            this.setState({ treeObject: tree03 });
+          }}
+        </Gitgraph>
+      </>
     );
     this.graphs.set("tree03", tree03);
 
