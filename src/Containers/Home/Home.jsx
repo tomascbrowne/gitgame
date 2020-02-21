@@ -7,7 +7,7 @@ import Image from "react-bootstrap/Image";
 import logoImage from "./Menu-logo.jpg";
 import Container from "react-bootstrap/Container";
 
-class level3 extends Component {
+class home extends Component {
   state = {
     redirect: false,
     redirectPage: ""
@@ -120,4 +120,4 @@ class level3 extends Component {
   }
 }
 
-export default level3;
+export default home;
