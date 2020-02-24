@@ -7,6 +7,7 @@ import Level1 from "./Level1/Level1";
 import Level2 from "./Level2/Level2";
 import Level3 from "./Home/Home";
 import SignIn from "./Auth/Signin";
+import SignUp from "./Auth/Signup";
 import { connect } from "react-redux";
 import { signOut } from "../Store/actions/authActions";
 
@@ -17,7 +18,10 @@ const game = props => {
       Log Out
     </Nav.Link>
   ) : (
-    <Nav.Link href="/Signin">Sign In</Nav.Link>
+    <>
+      <Nav.Link href="/Signin">Sign In</Nav.Link>
+      <Nav.Link href="/Signup">Sign Up</Nav.Link>
+    </>
   );
   return (
     <div>
@@ -30,6 +34,7 @@ const game = props => {
       <Route path="/Level2" exact render={() => <Level2 />} />
       <Route path="/Level3" exact render={() => <Level3 />} />
       <Route path="/Signin" exact render={() => <SignIn />} />
+      <Route path="/Signup" exact render={() => <SignUp />} />
     </div>
   );
 };
