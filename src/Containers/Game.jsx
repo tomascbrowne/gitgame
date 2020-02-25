@@ -27,7 +27,12 @@ const game = props => {
     <div>
       <Navbar bg="dark" variant="dark" expand="lg">
         <Navbar.Brand href="/">Git Game</Navbar.Brand>
-        <Nav className="mr-auto">{links}</Nav>
+
+        <Navbar.Collapse>
+          <Nav className="mr-auto navbar-right">
+            <Nav className="mr-auto navbar-right">{links}</Nav>
+          </Nav>
+        </Navbar.Collapse>
       </Navbar>
       <Route path="/" exact render={() => <Home />} />
       <Route path="/Level1" exact render={() => <Level1 />} />

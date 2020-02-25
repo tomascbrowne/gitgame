@@ -69,7 +69,6 @@ class home extends Component {
             onClick: this.onCommitClick.bind(this, "level4")
           });
 
-          //master.merge(development, "");
           master.merge({
             branch: development,
             subject: "HEHE EXX DEE",
