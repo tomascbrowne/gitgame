@@ -127,69 +127,73 @@ class level1 extends Component {
     this.graphs.set("tree014", tree014);
 
     const tree02 = (
-      <Gitgraph options={options}>
-        {tree02 => {
-          const master02 = tree02.branch("master");
+      <>
+        <Gitgraph options={options}>
+          {tree02 => {
+            const master02 = tree02.branch("master");
 
-          master02.commit("Add tests");
+            master02.commit("Add tests");
 
-          const development02 = tree02.branch("development");
+            const development02 = tree02.branch("development");
 
-          development02.commit("Init");
+            development02.commit("Init");
 
-          const feature02 = tree02.branch("feature_branch");
+            const feature02 = tree02.branch("feature_branch");
 
-          feature02.commit("Added some cool stuff");
-          feature02.commit("Added some other cool stuff");
+            feature02.commit("Added some cool stuff");
+            feature02.commit("Added some other cool stuff");
 
-          feature02.merge(development02, "Merged in feature");
-          const customTagStyle = {
-            bgColor: "red",
-            strokeColor: "red",
-            borderRadius: 0,
-            pointerWidth: 0
-          };
-          feature02.tag({
-            name: "CONFLICT",
-            style: customTagStyle
-          });
-          this.setState({ treeObject: tree02 });
-        }}
-      </Gitgraph>
+            feature02.merge(development02, "Merged in feature");
+            const customTagStyle = {
+              bgColor: "red",
+              strokeColor: "red",
+              borderRadius: 0,
+              pointerWidth: 0
+            };
+            feature02.tag({
+              name: "CONFLICT",
+              style: customTagStyle
+            });
+            this.setState({ treeObject: tree02 });
+          }}
+        </Gitgraph>
+      </>
     );
     this.graphs.set("tree02", tree02);
 
     const tree03 = (
-      <Gitgraph options={options}>
-        {tree03 => {
-          const master03 = tree03.branch("master");
+      <>
+        <Gitgraph options={options}>
+          {tree03 => {
+            const master03 = tree03.branch("master");
 
-          master03.commit("Add tests");
+            master03.commit("Add tests");
 
-          const development03 = tree03.branch("development");
+            const development03 = tree03.branch("development");
 
-          development03.commit("Init");
+            development03.commit("Init");
 
-          const feature03 = tree03.branch("feature_branch");
+            const feature03 = tree03.branch("feature_branch");
 
-          feature03.commit("Added some cool stuff");
-          feature03.commit("Added some other cool stuff");
+            feature03.commit("Added some cool stuff");
+            feature03.commit("Added some other cool stuff");
 
-          development03.merge(feature03, "Merged in feature");
+            development03.merge(feature03, "Merged in feature");
 
-          const customTagStyle = {
-            bgColor: "red",
-            strokeColor: "red",
-            borderRadius: 0,
-            pointerWidth: 0
-          };
-          development03.tag({
-            name: "CONFLICT",
-            style: customTagStyle
-          });
-          this.setState({ treeObject: tree03 });
-        }}
-      </Gitgraph>
+            const customTagStyle = {
+              bgColor: "red",
+              strokeColor: "red",
+              borderRadius: 0,
+              pointerWidth: 0
+            };
+            development03.tag({
+              name: "CONFLICT",
+              style: customTagStyle
+            });
+            this.setState({ treeObject: tree03 });
+          }}
+        </Gitgraph>
+      </>
     );
     this.graphs.set("tree03", tree03);
 

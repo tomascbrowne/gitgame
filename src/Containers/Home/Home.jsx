@@ -7,7 +7,7 @@ import Image from "react-bootstrap/Image";
 import logoImage from "./Menu-logo.jpg";
 import Container from "react-bootstrap/Container";
 
-class level3 extends Component {
+class home extends Component {
   state = {
     redirect: false,
     redirectPage: ""
@@ -69,7 +69,6 @@ class level3 extends Component {
             onClick: this.onCommitClick.bind(this, "level4")
           });
 
-          //master.merge(development, "");
           master.merge({
             branch: development,
             subject: "HEHE EXX DEE",
@@ -120,4 +119,4 @@ class level3 extends Component {
   }
 }
 
-export default level3;
+export default home;
