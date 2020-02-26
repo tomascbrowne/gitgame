@@ -8,7 +8,8 @@ class level3 extends React.Component {
     super();
     this.state = {
       branches: [],
-      currentBranch: " "
+      currentBranch: " ",
+      error: null
     };
   }
 
@@ -33,6 +34,18 @@ class level3 extends React.Component {
       }));
     };
 
+    const mergeBranch = (currentBranch, destBranch) => {
+      const branches = this.state.branches;
+      const from = branches.find(from => from.name === currentBranch);
+      const to = branches.find(to => to.name === destBranch);
+      to.merge(from);
+    };
+
+    const checkBranch = name => {
+      const check = this.state.branches.map(e => e.name);
+      return check.includes(name);
+    };
+
     const handleChange = name => e => {
       this.setState({ [name]: e.currentTarget.value });
     };
@@ -52,7 +65,6 @@ class level3 extends React.Component {
         alert(coms[0] + "is not recognised");
       }
       coms.slice(1).forEach((com, index, array) => {
-        console.log(array[index + 1]);
         this.setState({ error: null });
         switch (com) {
           case "branch": {
@@ -70,39 +82,35 @@ class level3 extends React.Component {
             return;
           }
           case "checkout": {
-            if (array[index + 1] && array[index + 1].match(/\<.*?\>/g)) {
+            const check = checkBranch(
+              array[index + 1].substring(1, array[index + 1].length - 1)
+            );
+            console.log(check);
+            if (
+              array[index + 1] &&
+              array[index + 1].match(/\<.*?\>/g) &&
+              check
+            ) {
               this.setState({
                 ["currentBranch"]: array[index + 1].substring(
                   1,
                   array[index + 1].length - 1
                 )
               });
-              // THIS WHAT I WORKING ON
-              console.log("ahhhhhhhh");
             } else {
               var errorMsg = "branch " + array[index + 1] + " does not exist";
               this.setState({ error: errorMsg });
+              console.log(errorMsg);
             }
-            if (
-              this.state.branches.some(item => array[index + 1] === item.name)
-            ) {
-              console.log("Match");
-            } else {
-              console.log("No Match");
-            }
+            return;
           }
           // THIS WHAT I WORKING ON
           case "merge": {
-            if (array[index + 1] && array[index + 1].match(/\<.*?\>/g)) {
-              var mergeDest = array[index + 1].substring(
-                1,
-                array[index + 1].length - 1
-              );
-              this.setState({
-                ["currentBranch"]: mergeDest
-              });
-              //this.state.currentBranch.merge(mergeDest);
-            }
+            mergeBranch(
+              this.state.currentBranch,
+              array[index + 1].substring(1, array[index + 1].length - 1)
+            );
+            return;
           }
         }
       });
