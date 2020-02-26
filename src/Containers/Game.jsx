@@ -5,7 +5,7 @@ import Nav from "react-bootstrap/Nav";
 import Home from "./Home/Home";
 import Level1 from "./Level1/Level1";
 import Level2 from "./Level2/Level2";
-import Level3 from "./Home/Home";
+import Level3 from "./Level3/Level3";
 import SignIn from "./Auth/Signin";
 import SignUp from "./Auth/Signup";
 import { connect } from "react-redux";
