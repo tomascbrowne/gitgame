@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Gitgraph } from "@gitgraph/react";
-//import "./BigManTing.css";
 // eslint-disable @typescript-eslint/explicit-function-return-type
 
 class level3 extends React.Component {
@@ -9,7 +8,7 @@ class level3 extends React.Component {
     this.state = {
       branches: [],
       currentBranch: " ",
-      error: null
+      error: " "
     };
   }
 
@@ -20,10 +19,14 @@ class level3 extends React.Component {
           b => b.name === this.state.currentBranch
         );
         if (branch) {
-          branch.commit(this.state[`message${this.state.currentBranch.name}`]);
+          console.log(branch);
+          branch._graph.author = "user";
+          branch.commit(message);
         }
       } else if (message) {
+        this.state.gitgraph._graph.author = "user";
         this.state.gitgraph.commit(message);
+        console.table(this.state.gitgraph);
       }
     };
 
@@ -55,7 +58,7 @@ class level3 extends React.Component {
       this.setState({
         branches: [],
         currentBranch: "",
-        error: null
+        error: " "
       });
     };
 
@@ -65,7 +68,6 @@ class level3 extends React.Component {
         alert(coms[0] + "is not recognised");
       }
       coms.slice(1).forEach((com, index, array) => {
-        this.setState({ error: null });
         switch (com) {
           case "branch": {
             if (array[index + 1] && array[index + 1].match(/\<.*?\>/g)) {
@@ -73,23 +75,23 @@ class level3 extends React.Component {
                 array[index + 1].substring(1, array[index + 1].length - 1)
               );
             }
+            this.setState({ error: " " });
             return;
           }
           case "commit": {
             if (array[index + 1] === "-m") {
               addCommit(array[index + 2]);
             }
+            this.setState({ error: " " });
             return;
           }
           case "checkout": {
-            const check = checkBranch(
-              array[index + 1].substring(1, array[index + 1].length - 1)
-            );
-            console.log(check);
             if (
               array[index + 1] &&
               array[index + 1].match(/\<.*?\>/g) &&
-              check
+              checkBranch(
+                array[index + 1].substring(1, array[index + 1].length - 1)
+              )
             ) {
               this.setState({
                 ["currentBranch"]: array[index + 1].substring(
@@ -104,12 +106,66 @@ class level3 extends React.Component {
             }
             return;
           }
-          // THIS WHAT I WORKING ON
           case "merge": {
-            mergeBranch(
-              this.state.currentBranch,
-              array[index + 1].substring(1, array[index + 1].length - 1)
-            );
+            if (
+              array[index + 1] &&
+              checkBranch(
+                array[index + 1].substring(1, array[index + 1].length - 1)
+              ) &&
+              !array[index + 2]
+            ) {
+              // merges destination branch into current branch
+              mergeBranch(
+                array[index + 1].substring(1, array[index + 1].length - 1),
+                this.state.currentBranch
+              );
+              this.setState({ error: " " });
+            } else if (
+              array[index + 1] &&
+              array[index + 2] &&
+              checkBranch(
+                array[index + 1].substring(1, array[index + 1].length - 1)
+              ) &&
+              checkBranch(
+                array[index + 2].substring(1, array[index + 2].length - 1)
+              )
+            ) {
+              // sets first arg as current branch and merges 2nd arg into it
+              mergeBranch(
+                array[index + 2].substring(1, array[index + 2].length - 1),
+                array[index + 1].substring(1, array[index + 1].length - 1)
+              );
+              this.setState({ error: " " });
+            } else {
+              if (array[index + 1] && !array[index + 2]) {
+                var errorMsg = "branch " + array[index + 1] + " does not exist";
+              } else if (array[index + 1] && array[index + 2]) {
+                if (
+                  checkBranch(
+                    array[index + 1].substring(1, array[index + 1].length - 1)
+                  )
+                ) {
+                  var errorMsg =
+                    "branch " + array[index + 1] + " does not exist";
+                } else if (
+                  checkBranch(
+                    array[index + 2].substring(1, array[index + 2].length - 1)
+                  )
+                ) {
+                  var errorMsg =
+                    "branch " + array[index + 1] + " does not exist";
+                } else {
+                  var errorMsg =
+                    "branch " +
+                    array[index + 1] +
+                    " does not exist and branch " +
+                    +array[index + 2] +
+                    " does not exist";
+                }
+              }
+              this.setState({ error: errorMsg });
+              console.log(errorMsg);
+            }
             return;
           }
         }
@@ -133,7 +189,6 @@ class level3 extends React.Component {
           />
           <button>Enter Command</button>
         </form>
-        {this.state.error ? <div>{this.state.error}</div> : null}
 
         <form
           onSubmit={e => {
@@ -186,6 +241,7 @@ class level3 extends React.Component {
             ))
         )}
         <div>{this.state.currentBranch}</div>
+        <div>{this.state.error}</div>
         <button
           onClick={clear}
           style={{ position: "absolute", right: 10, top: 10 }}
