@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Gitgraph } from "@gitgraph/react";
+import { Gitgraph, Mode } from "@gitgraph/react";
+import { Row, Col } from "react-bootstrap";
 // eslint-disable @typescript-eslint/explicit-function-return-type
 
 class level3 extends React.Component {
@@ -8,7 +9,8 @@ class level3 extends React.Component {
     this.state = {
       branches: [],
       currentBranch: " ",
-      error: " "
+      error: " ",
+      goalTree: null
     };
   }
 
@@ -26,7 +28,6 @@ class level3 extends React.Component {
       } else if (message) {
         this.state.gitgraph._graph.author = "user";
         this.state.gitgraph.commit(message);
-        console.table(this.state.gitgraph);
       }
     };
 
@@ -60,6 +61,27 @@ class level3 extends React.Component {
         currentBranch: "",
         error: " "
       });
+    };
+
+    const handleCheck = () => {
+      const branch = this.state.gitgraph;
+      console.log(branch._graph.commits);
+      if (
+        this.state.goalTree._graph.commits.length ==
+        branch._graph.commits.length
+      ) {
+        for (const [
+          index,
+          value
+        ] of this.state.goalTree._graph.commits.entries()) {
+          if (value.refs[0] != branch._graph.commits[index].refs[0]) {
+            return alert("They don't match");
+          }
+        }
+        return alert("They don't match!");
+      } else {
+        return alert("They don't match");
+      }
     };
 
     const handleCommand = () => {
@@ -173,6 +195,9 @@ class level3 extends React.Component {
     };
 
     const branches = this.state.branches;
+    const options = {
+      mode: Mode.Compact
+    };
     return (
       <div id="container">
         <form
@@ -248,8 +273,38 @@ class level3 extends React.Component {
         >
           clear
         </button>
+        <button
+          onClick={handleCheck}
+          style={{ position: "absolute", right: 20, top: 20 }}
+        >
+          check answer
+        </button>
         <br />
-        <Gitgraph>{gitgraph => this.setState({ gitgraph })}</Gitgraph>
+        <Row className="d-flex flex-row align-self-center p-2 h-100">
+          <Col>
+            <Gitgraph>{gitgraph => this.setState({ gitgraph })}</Gitgraph>
+          </Col>
+          <Col>
+            <Gitgraph options={options}>
+              {baseTree => {
+                const master = baseTree.branch("master");
+
+                master.commit("Add tests");
+
+                const development = baseTree.branch("development");
+
+                development.commit("Init");
+
+                const feature = baseTree.branch("feature_branch");
+
+                feature.commit("Added some cool stuff");
+                feature.commit("Added some other cool stuff");
+
+                this.setState({ goalTree: baseTree });
+              }}
+            </Gitgraph>
+          </Col>
+        </Row>
       </div>
     );
   }
