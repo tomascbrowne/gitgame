@@ -103,11 +103,11 @@ class home extends Component {
       let page = "/" + this.state.redirectPage;
       return <Redirect to={page} />;
     }
-
+    const rowStyle = { height: "100%", paddingTop: "50px" };
     return (
       <>
         <Container>
-          <Row style={{ height: "100vh" }}>
+          <Row style={rowStyle}>
             <Col className="md-6 lg-6">{graphs.get("tree0")}</Col>
             <Col className="md-6 lg-6">
               <Image src={logoImage} />

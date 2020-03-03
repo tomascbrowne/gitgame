@@ -1,6 +1,8 @@
 import * as React from "react";
 import { Gitgraph, Mode } from "@gitgraph/react";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Button } from "react-bootstrap";
+import "./level3-style.css";
+import { MDBContainer, MDBScrollbar } from "mdbreact";
 // eslint-disable @typescript-eslint/explicit-function-return-type
 
 class level3 extends React.Component {
@@ -10,7 +12,9 @@ class level3 extends React.Component {
       branches: [],
       currentBranch: " ",
       error: " ",
-      goalTree: null
+      goalTree: null,
+      hidden: false,
+      commands: []
     };
   }
 
@@ -59,7 +63,9 @@ class level3 extends React.Component {
       this.setState({
         branches: [],
         currentBranch: "",
-        error: " "
+        error: " ",
+        hidden: false,
+        commands: []
       });
     };
 
@@ -84,7 +90,15 @@ class level3 extends React.Component {
       }
     };
 
+    const handleHidden = () => {
+      const newHidden = !this.state.hidden;
+      this.setState({ hidden: newHidden });
+    };
+
     const handleCommand = () => {
+      this.setState({
+        commands: this.state.commands.concat(this.state["command"])
+      });
       const coms = this.state["command"].split(" ");
       if (coms[0] !== "git") {
         alert(coms[0] + "is not recognised");
@@ -198,93 +212,74 @@ class level3 extends React.Component {
     const options = {
       mode: Mode.Compact
     };
+    const scrollContainerStyle = {
+      width: "100%",
+      height: "100px",
+      maxHeight: "100px",
+      padding: "10px",
+      outlineStyle: "auto",
+      outlineColor: "grey"
+    };
     return (
-      <div id="container">
-        <form
-          id="commandLine"
-          onSubmit={e => {
-            e.preventDefault();
-            handleCommand();
-          }}
-        >
-          <input
-            type="text"
-            value={this.state.command}
-            onChange={handleChange("command")}
-          />
-          <button>Enter Command</button>
-        </form>
-
-        <form
-          onSubmit={e => {
-            e.preventDefault();
-            addCommit();
-          }}
-        >
-          <input
-            type="text"
-            value={this.state.commitMessage}
-            onChange={handleChange("commitMessage")}
-          />
-          <button>Commit on HEAD</button>
-        </form>
-        <form
-          onSubmit={e => {
-            e.preventDefault();
-            addBranch();
-          }}
-        >
-          <input type="text" onChange={handleChange("branchName")} />
-          <button>Add a branch</button>
-        </form>
-        {branches.map(branch => (
-          <form
-            key={branch.name}
-            onSubmit={e => {
-              e.preventDefault();
-              addCommit(branch);
-            }}
-          >
-            <input
-              type="text"
-              value={this.state[`commitMessage${branch.name}`]}
-              onChange={handleChange(`commitMessage${branch.name}`)}
-            />
-            <button>Commit on {branch.name}</button>
-          </form>
-        ))}
-        {branches.map(to =>
-          branches
-            .filter(from => to.name !== from.name)
-            .map(from => (
-              <button
-                key={`${to.name}->${from.name}`}
-                onClick={() => from.merge(to)}
+      <div id="content" className="level3-style container fluid">
+        <Row id="main" lg={{ span: 12 }}>
+          <Col align="center">
+            <div className="pl-4 pr-4 card card-block d-table-cell">
+              <MDBContainer>
+                <div
+                  className="scrollbar my-5 mx-auto"
+                  id="pastCommand"
+                  style={scrollContainerStyle}
+                >
+                  {this.state.commands.map(e => (
+                    <li>{e}</li>
+                  ))}
+                </div>
+              </MDBContainer>
+              <form
+                id="commandLine"
+                onSubmit={e => {
+                  e.preventDefault();
+                  handleCommand();
+                }}
               >
-                Merge {to.name} into {from.name}
-              </button>
-            ))
-        )}
-        <div>{this.state.currentBranch}</div>
-        <div>{this.state.error}</div>
-        <button
-          onClick={clear}
-          style={{ position: "absolute", right: 10, top: 10 }}
-        >
-          clear
-        </button>
-        <button
-          onClick={handleCheck}
-          style={{ position: "absolute", right: 20, top: 20 }}
-        >
-          check answer
-        </button>
-        <br />
-        <Row className="d-flex flex-row align-self-center p-2 h-100">
-          <Col>
-            <Gitgraph>{gitgraph => this.setState({ gitgraph })}</Gitgraph>
+                <center>
+                  <p id="error">{this.state.error}</p>
+                  <input
+                    type="text"
+                    value={this.state.command}
+                    onChange={handleChange("command")}
+                  />
+                  <Button
+                    id="commandButton"
+                    variant="dark"
+                    size="sm"
+                    disabled={this.state.hidden}
+                  >
+                    Enter Command
+                  </Button>
+                </center>
+              </form>
+            </div>
+            <Row id="clear_button">
+              <Col>
+                <Button variant="outline-danger" onClick={clear} block>
+                  clear
+                </Button>
+              </Col>
+              <Col>
+                <Button variant="outline-success" onClick={handleCheck} block>
+                  check answer
+                </Button>
+              </Col>
+            </Row>
+
+            <div>{this.state.currentBranch}</div>
           </Col>
-          <Col>
+
+          <Col align="center">
+            <Gitgraph>{gitgraph => this.setState({ gitgraph })}</Gitgraph>
+
             <Gitgraph options={options}>
               {baseTree => {
                 const master = baseTree.branch("master");
@@ -303,6 +298,8 @@ class level3 extends React.Component {
                 this.setState({ goalTree: baseTree });
               }}
             </Gitgraph>
+
+            {/* <button onClick={handleHidden}>show me the money</button> */}
           </Col>
         </Row>
       </div>
