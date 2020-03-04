@@ -3,9 +3,12 @@ import { Gitgraph, Mode } from "@gitgraph/react";
 import { Row, Col, Button } from "react-bootstrap";
 import "./level3-style.css";
 import { MDBContainer, MDBScrollbar } from "mdbreact";
+import { connect } from "react-redux";
+import { getGraph } from "../../../Store/actions/createLevelAction";
+//import { useSelector } from "react-redux";
 // eslint-disable @typescript-eslint/explicit-function-return-type
 
-class level3 extends React.Component {
+class customLevel extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -19,6 +22,9 @@ class level3 extends React.Component {
   }
 
   render() {
+    console.log("AA");
+    console.log();
+    console.log("AA");
     const addCommit = message => {
       if (this.state.currentBranch !== " ") {
         const branch = this.state.branches.find(
@@ -208,6 +214,8 @@ class level3 extends React.Component {
       });
     };
 
+    //const graph = useSelector(state => state.graph);
+
     const branches = this.state.branches;
     const options = {
       mode: Mode.Compact
@@ -246,7 +254,6 @@ class level3 extends React.Component {
                 <center>
                   <p id="error">{this.state.error}</p>
                   <input
-                    id="commandInput"
                     type="text"
                     value={this.state.command}
                     onChange={handleChange("command")}
@@ -281,25 +288,6 @@ class level3 extends React.Component {
           <Col align="center">
             <Gitgraph>{gitgraph => this.setState({ gitgraph })}</Gitgraph>
 
-            <Gitgraph options={options}>
-              {baseTree => {
-                const master = baseTree.branch("master");
-
-                master.commit("Add tests");
-
-                const development = baseTree.branch("development");
-
-                development.commit("Init");
-
-                const feature = baseTree.branch("feature_branch");
-
-                feature.commit("Added some cool stuff");
-                feature.commit("Added some other cool stuff");
-
-                this.setState({ goalTree: baseTree });
-              }}
-            </Gitgraph>
-
             {/* <button onClick={handleHidden}>show me the money</button> */}
           </Col>
         </Row>
@@ -308,4 +296,8 @@ class level3 extends React.Component {
   }
 }
 
-export default level3;
+const mapStateToProps = state => ({
+  graph: state.graph.setgraph
+});
+
+export default connect(mapStateToProps, { getGraph })(customLevel);

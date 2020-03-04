@@ -8,6 +8,8 @@ import Level2 from "./Level2/Level2";
 import Level3 from "./Level3/Level3";
 import SignIn from "./Auth/Signin";
 import SignUp from "./Auth/Signup";
+import CreateLevel from "./CreateLevel/createLevel";
+import CustomLevel from "./CreateLevel/CustomLevel/customLevel";
 import { connect } from "react-redux";
 import { signOut } from "../Store/actions/authActions";
 
@@ -31,6 +33,7 @@ const game = props => {
         <Navbar.Collapse>
           <Nav className="mr-auto navbar-right">
             <Nav className="mr-auto navbar-right">{links}</Nav>
+            <Nav.Link href="/CreateLevel">Create Level</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Navbar>
@@ -40,6 +43,11 @@ const game = props => {
       <Route path="/Level3" exact render={() => <Level3 />} />
       <Route path="/Signin" exact render={() => <SignIn />} />
       <Route path="/Signup" exact render={() => <SignUp />} />
+      <Route path="/CreateLevel" exact render={() => <CreateLevel />} />
+      <Route
+        path="/CreateLevel/CustomLevel"
+        render={props => <CustomLevel {...props} />}
+      />
     </div>
   );
 };

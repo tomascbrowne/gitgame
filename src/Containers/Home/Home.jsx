@@ -42,6 +42,7 @@ class home extends Component {
       <Gitgraph options={options}>
         {tree0 => {
           const master = tree0.branch("master");
+          tree0._graph.author = "";
 
           master.commit({
             subject: "Level 1",

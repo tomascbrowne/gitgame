@@ -3,9 +3,10 @@ import { Gitgraph, Mode } from "@gitgraph/react";
 import { Row, Col, Button } from "react-bootstrap";
 import "./level3-style.css";
 import { MDBContainer, MDBScrollbar } from "mdbreact";
+import { connect } from "react-redux";
 // eslint-disable @typescript-eslint/explicit-function-return-type
 
-class level3 extends React.Component {
+class createLevel extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -69,30 +70,13 @@ class level3 extends React.Component {
       });
     };
 
-    const handleCheck = () => {
-      const branch = this.state.gitgraph;
-      console.log(branch._graph.commits);
-      if (
-        this.state.goalTree._graph.commits.length ==
-        branch._graph.commits.length
-      ) {
-        for (const [
-          index,
-          value
-        ] of this.state.goalTree._graph.commits.entries()) {
-          if (value.refs[0] != branch._graph.commits[index].refs[0]) {
-            return alert("They don't match");
-          }
-        }
-        return alert("They don't match!");
-      } else {
-        return alert("They don't match");
-      }
-    };
-
     const handleHidden = () => {
       const newHidden = !this.state.hidden;
       this.setState({ hidden: newHidden });
+    };
+
+    const handleProps = () => {
+      this.props.setGraph({ data: this.state.gitgraph });
     };
 
     const handleCommand = () => {
@@ -246,7 +230,6 @@ class level3 extends React.Component {
                 <center>
                   <p id="error">{this.state.error}</p>
                   <input
-                    id="commandInput"
                     type="text"
                     value={this.state.command}
                     onChange={handleChange("command")}
@@ -269,8 +252,12 @@ class level3 extends React.Component {
                 </Button>
               </Col>
               <Col>
-                <Button variant="outline-success" onClick={handleCheck} block>
-                  check answer
+                <Button
+                  variant="outline-success"
+                  onClick={handleProps}
+                  href="/CreateLevel/CustomLevel"
+                >
+                  save
                 </Button>
               </Col>
             </Row>
@@ -280,27 +267,6 @@ class level3 extends React.Component {
 
           <Col align="center">
             <Gitgraph>{gitgraph => this.setState({ gitgraph })}</Gitgraph>
-
-            <Gitgraph options={options}>
-              {baseTree => {
-                const master = baseTree.branch("master");
-
-                master.commit("Add tests");
-
-                const development = baseTree.branch("development");
-
-                development.commit("Init");
-
-                const feature = baseTree.branch("feature_branch");
-
-                feature.commit("Added some cool stuff");
-                feature.commit("Added some other cool stuff");
-
-                this.setState({ goalTree: baseTree });
-              }}
-            </Gitgraph>
-
-            {/* <button onClick={handleHidden}>show me the money</button> */}
           </Col>
         </Row>
       </div>
@@ -308,4 +274,14 @@ class level3 extends React.Component {
   }
 }
 
-export default level3;
+function mapDispatchToProps(dispatch) {
+  return {
+    setGraph: data => {
+      dispatch({ type: "SET_GRAPH", payload: data });
+    }
+  };
+}
+
+const mapStateToProps = state => state.gitgraph;
+
+export default connect(mapStateToProps)(createLevel);
