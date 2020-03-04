@@ -4,8 +4,7 @@ import { Row, Col, Button } from "react-bootstrap";
 import "./level3-style.css";
 import { MDBContainer, MDBScrollbar } from "mdbreact";
 import { connect } from "react-redux";
-import { getGraph } from "../../../Store/actions/createLevelAction";
-//import { useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 // eslint-disable @typescript-eslint/explicit-function-return-type
 
 class customLevel extends React.Component {
@@ -21,10 +20,13 @@ class customLevel extends React.Component {
     };
   }
 
+  // getGraph = () => {
+  //   const graph = useSelector(state => state.graph);
+  //   console.log(graph);
+  // };
+
   render() {
-    console.log("AA");
-    console.log();
-    console.log("AA");
+    // this.getGraph();
     const addCommit = message => {
       if (this.state.currentBranch !== " ") {
         const branch = this.state.branches.find(
@@ -214,9 +216,8 @@ class customLevel extends React.Component {
       });
     };
 
-    //const graph = useSelector(state => state.graph);
-
-    const branches = this.state.branches;
+    const branches = this.props.graph;
+    console.log(branches);
     const options = {
       mode: Mode.Compact
     };
@@ -288,7 +289,7 @@ class customLevel extends React.Component {
           <Col align="center">
             <Gitgraph>{gitgraph => this.setState({ gitgraph })}</Gitgraph>
 
-            {/* <button onClick={handleHidden}>show me the money</button> */}
+            {/* <Gitgraph>{target => branches}</Gitgraph> */}
           </Col>
         </Row>
       </div>
@@ -296,8 +297,10 @@ class customLevel extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  graph: state.graph.setgraph
-});
+const mapStateToProps = state => {
+  return {
+    graph: state.graph.graph.data
+  };
+};
 
-export default connect(mapStateToProps, { getGraph })(customLevel);
+export default connect(mapStateToProps, null)(customLevel);

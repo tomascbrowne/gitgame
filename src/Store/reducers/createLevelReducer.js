@@ -11,7 +11,7 @@ const createLevelReducer = (state = initialState, action) => {
       console.log("setting graph");
       return {
         ...state,
-        setgraph: actionTypes.payload
+        graph: action.payload
       };
     default:
       return state;

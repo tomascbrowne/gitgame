@@ -4,6 +4,7 @@ import { Row, Col, Button } from "react-bootstrap";
 import "./level3-style.css";
 import { MDBContainer, MDBScrollbar } from "mdbreact";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 // eslint-disable @typescript-eslint/explicit-function-return-type
 
 class createLevel extends React.Component {
@@ -192,7 +193,6 @@ class createLevel extends React.Component {
       });
     };
 
-    const branches = this.state.branches;
     const options = {
       mode: Mode.Compact
     };
@@ -252,13 +252,11 @@ class createLevel extends React.Component {
                 </Button>
               </Col>
               <Col>
-                <Button
-                  variant="outline-success"
-                  onClick={handleProps}
-                  href="/CreateLevel/CustomLevel"
-                >
-                  save
-                </Button>
+                <Link to="/CreateLevel/CustomLevel">
+                  <Button variant="outline-success" onClick={handleProps}>
+                    save
+                  </Button>
+                </Link>
               </Col>
             </Row>
 
@@ -275,13 +273,12 @@ class createLevel extends React.Component {
 }
 
 function mapDispatchToProps(dispatch) {
+  console.log("dispatch method entered");
   return {
     setGraph: data => {
-      dispatch({ type: "SET_GRAPH", payload: data });
+      dispatch({ payload: data, type: "SET_GRAPH" });
     }
   };
 }
 
-const mapStateToProps = state => state.gitgraph;
-
-export default connect(mapStateToProps)(createLevel);
+export default connect(null, mapDispatchToProps)(createLevel);

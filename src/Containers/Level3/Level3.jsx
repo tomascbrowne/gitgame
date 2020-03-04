@@ -84,16 +84,25 @@ class level3 extends React.Component {
             return alert("They don't match");
           }
         }
-        return alert("They don't match!");
+        return alert("They DO match!");
       } else {
         return alert("They don't match");
       }
     };
 
-    const handleHidden = () => {
+    function toggleDisplay() {
+      var x = document.getElementById("graphHide");
+      var y = document.getElementById("graphHide2");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.display = "none";
+      } else {
+        x.style.display = "none";
+        y.style.display = "block";
+      }
       const newHidden = !this.state.hidden;
       this.setState({ hidden: newHidden });
-    };
+    }
 
     const handleCommand = () => {
       this.setState({
@@ -251,20 +260,25 @@ class level3 extends React.Component {
                     value={this.state.command}
                     onChange={handleChange("command")}
                   />
-                  <Button
+                  <button
                     id="commandButton"
                     variant="dark"
                     size="sm"
                     disabled={this.state.hidden}
                   >
                     Enter Command
-                  </Button>
+                  </button>
                 </center>
               </form>
             </div>
             <Row id="clear_button">
               <Col>
-                <Button variant="outline-danger" onClick={clear} block>
+                <Button
+                  disabled={this.state.hidden}
+                  variant="outline-danger"
+                  onClick={clear}
+                  block
+                >
                   clear
                 </Button>
               </Col>
@@ -276,31 +290,35 @@ class level3 extends React.Component {
             </Row>
 
             <div>{this.state.currentBranch}</div>
+            <button onClick={toggleDisplay.bind(this)}>
+              show me the money
+            </button>
           </Col>
 
           <Col align="center">
-            <Gitgraph>{gitgraph => this.setState({ gitgraph })}</Gitgraph>
+            <div id="graphHide">
+              <Gitgraph>{gitgraph => this.setState({ gitgraph })}</Gitgraph>
+            </div>
+            <div id="graphHide2">
+              <Gitgraph options={options}>
+                {baseTree => {
+                  const master = baseTree.branch("master");
 
-            <Gitgraph options={options}>
-              {baseTree => {
-                const master = baseTree.branch("master");
+                  master.commit("Add tests");
 
-                master.commit("Add tests");
+                  const development = baseTree.branch("development");
 
-                const development = baseTree.branch("development");
+                  development.commit("Init");
 
-                development.commit("Init");
+                  const feature = baseTree.branch("feature_branch");
 
-                const feature = baseTree.branch("feature_branch");
+                  feature.commit("Added some cool stuff");
+                  feature.commit("Added some other cool stuff");
 
-                feature.commit("Added some cool stuff");
-                feature.commit("Added some other cool stuff");
-
-                this.setState({ goalTree: baseTree });
-              }}
-            </Gitgraph>
-
-            {/* <button onClick={handleHidden}>show me the money</button> */}
+                  this.setState({ goalTree: baseTree });
+                }}
+              </Gitgraph>
+            </div>
           </Col>
         </Row>
       </div>

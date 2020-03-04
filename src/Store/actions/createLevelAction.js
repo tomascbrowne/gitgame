@@ -1,6 +1,10 @@
 import { SET_GRAPH } from "../actions/types";
 
-export function getGraph() {
-  console.log("action");
-  return;
+export function getGraph(graph) {
+  console.log("level Action");
+  console.log(graph);
+  return {
+    type: SET_GRAPH,
+    setGraph: graph
+  };
 }
