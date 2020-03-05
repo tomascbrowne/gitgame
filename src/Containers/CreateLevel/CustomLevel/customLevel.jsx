@@ -20,10 +20,9 @@ class customLevel extends React.Component {
     };
   }
 
-  // getGraph = () => {
-  //   const graph = useSelector(state => state.graph);
-  //   console.log(graph);
-  // };
+  componentDidMount = prevProps => {
+    this.setState({ goalTree: this.props.graph });
+  };
 
   render() {
     // this.getGraph();
@@ -92,7 +91,7 @@ class customLevel extends React.Component {
             return alert("They don't match");
           }
         }
-        return alert("They don't match!");
+        return alert("They DO match!");
       } else {
         return alert("They don't match");
       }
@@ -216,8 +215,8 @@ class customLevel extends React.Component {
       });
     };
 
-    const branches = this.props.graph;
-    console.log(branches);
+    const gitgraph2 = this.props.graph;
+    console.log(gitgraph2);
     const options = {
       mode: Mode.Compact
     };
@@ -289,7 +288,7 @@ class customLevel extends React.Component {
           <Col align="center">
             <Gitgraph>{gitgraph => this.setState({ gitgraph })}</Gitgraph>
 
-            {/* <Gitgraph>{target => branches}</Gitgraph> */}
+            <Gitgraph>{gitgraph2 => this.setState({ gitgraph2 })}</Gitgraph>
           </Col>
         </Row>
       </div>

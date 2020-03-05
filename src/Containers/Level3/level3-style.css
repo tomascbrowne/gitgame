@@ -12,6 +12,26 @@
   padding-bottom: 1px;
 }
 
+#show {
+  position: fixed;
+  top: 56px;
+  right: 0;
+}
+
+#helpTop {
+  border-bottom: 1px solid black;
+}
+
+#graphHide {
+  display: none;
+}
+
+#help {
+  position: fixed;
+  top: 56px;
+  left: 0;
+}
+
 #pastCommand {
   width: 100%;
   maxheight: "100px";

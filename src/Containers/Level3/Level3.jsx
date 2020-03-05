@@ -3,6 +3,7 @@ import { Gitgraph, Mode } from "@gitgraph/react";
 import { Row, Col, Button } from "react-bootstrap";
 import "./level3-style.css";
 import { MDBContainer, MDBScrollbar } from "mdbreact";
+import Popup from "reactjs-popup";
 // eslint-disable @typescript-eslint/explicit-function-return-type
 
 class level3 extends React.Component {
@@ -14,9 +15,18 @@ class level3 extends React.Component {
       error: " ",
       goalTree: null,
       hidden: false,
-      commands: []
+      commands: [],
+      firstTime: true
     };
   }
+
+  componentDidUpdate = () => {
+    if (this.state.firstTime == true) {
+      this.state.gitgraph._graph.author = "user";
+      this.state.gitgraph.commit("init");
+      this.setState({ firstTime: false });
+    }
+  };
 
   render() {
     const addCommit = message => {
@@ -225,6 +235,7 @@ class level3 extends React.Component {
       width: "100%",
       height: "100px",
       maxHeight: "100px",
+      marginTop: "20px",
       padding: "10px",
       outlineStyle: "auto",
       outlineColor: "grey"
@@ -234,6 +245,7 @@ class level3 extends React.Component {
         <Row id="main" lg={{ span: 12 }}>
           <Col align="center">
             <div className="pl-4 pr-4 card card-block d-table-cell">
+              <p>Current Branch: {this.state.currentBranch}</p>
               <MDBContainer>
                 <div
                   className="scrollbar my-5 mx-auto"
@@ -288,11 +300,47 @@ class level3 extends React.Component {
                 </Button>
               </Col>
             </Row>
-
-            <div>{this.state.currentBranch}</div>
-            <button onClick={toggleDisplay.bind(this)}>
+            <Button
+              onClick={toggleDisplay.bind(this)}
+              variant="warning"
+              id="show"
+            >
               show me the money
-            </button>
+            </Button>
+            <Popup
+              trigger={
+                <Button variant="warning" id="help">
+                  Help
+                </Button>
+              }
+              modal
+              closeOnDocumentClick
+            >
+              <div id="helpTop">
+                <span> Help Menu </span>
+              </div>
+              <br></br>
+              <a>Commit: git commit -m 'message'</a>
+              <br></br>
+              <a>
+                Branch: git branch {"<"}branch_name{">"}
+              </a>
+              <br></br>
+              <a>
+                Checkout: git checkout {"<"}branch_name{">"}{" "}
+              </a>
+              <br></br>
+              <a>
+                Megre: git merge {"<"}branch_name{">"}
+              </a>
+              <br></br>
+              <span> OR </span>
+              <br></br>
+              <a>
+                Megre: git merge {"<"}
+                branch_name{">"} {"<"}branch_name{">"}
+              </a>
+            </Popup>
           </Col>
 
           <Col align="center">
