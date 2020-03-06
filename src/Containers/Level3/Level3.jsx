@@ -25,6 +25,11 @@ class level3 extends React.Component {
       this.state.gitgraph._graph.author = "user";
       this.state.gitgraph.commit("init");
       this.setState({ firstTime: false });
+      const merge = ["development", "feature_branch"];
+      this.state.goalTree._graph.commits[
+        this.state.goalTree._graph.commits.length - 1
+      ].merge = merge;
+      console.log(this.state.goalTree);
     }
   };
 
@@ -38,10 +43,14 @@ class level3 extends React.Component {
           console.log(branch);
           branch._graph.author = "user";
           branch.commit(message);
+          branch._graph.commits[branch._graph.commits.length - 1].merge = null;
         }
       } else if (message) {
         this.state.gitgraph._graph.author = "user";
         this.state.gitgraph.commit(message);
+        this.state.gitgraph._graph.commits[
+          this.state.gitgraph._graph.commits.length - 1
+        ].merge = null;
       }
     };
 
@@ -57,6 +66,8 @@ class level3 extends React.Component {
       const from = branches.find(from => from.name === currentBranch);
       const to = branches.find(to => to.name === destBranch);
       to.merge(from);
+      const merge = [from.name, to.name];
+      to._graph.commits[to._graph.commits.length - 1].merge = merge;
     };
 
     const checkBranch = name => {
@@ -81,7 +92,7 @@ class level3 extends React.Component {
 
     const handleCheck = () => {
       const branch = this.state.gitgraph;
-      console.log(branch._graph.commits);
+      console.log(branch);
       if (
         this.state.goalTree._graph.commits.length ==
         branch._graph.commits.length
@@ -93,6 +104,24 @@ class level3 extends React.Component {
           if (value.refs[0] != branch._graph.commits[index].refs[0]) {
             return alert("They don't match");
           }
+          //merge comparison
+          if (
+            value.merge != null &&
+            branch._graph.commits[index].merge != null
+          ) {
+            if (
+              value.merge[0] != branch._graph.commits[index].merge[0] ||
+              value.merge[1] != branch._graph.commits[index].merge[1]
+            )
+              return alert("They don't match");
+          } else if (
+            (value.merge == null &&
+              branch._graph.commits[index].merge != null) ||
+            (value.merge != null && branch._graph.commits[index].merge == null)
+          ) {
+            return alert("They don't match");
+          }
+          //merge comparison
         }
         return alert("They DO match!");
       } else {
@@ -240,6 +269,7 @@ class level3 extends React.Component {
       outlineStyle: "auto",
       outlineColor: "grey"
     };
+
     return (
       <div id="content" className="level3-style container fluid">
         <Row id="main" lg={{ span: 12 }}>
@@ -361,7 +391,7 @@ class level3 extends React.Component {
                   const feature = baseTree.branch("feature_branch");
 
                   feature.commit("Added some cool stuff");
-                  feature.commit("Added some other cool stuff");
+                  feature.merge(development);
 
                   this.setState({ goalTree: baseTree });
                 }}

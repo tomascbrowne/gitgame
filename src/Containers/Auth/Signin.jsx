@@ -3,7 +3,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import styles from "./signin.module.css";
+import "./signin.module.css";
 import { connect } from "react-redux";
 import { signIn } from "../../Store/actions/authActions";
 
@@ -64,7 +64,7 @@ class SignIn extends Component {
       <div className="container">
         <form className="white" onSubmit={this.handleSubmit}>
           <h5 className="grey-text text-darken-3">Sign In</h5>
-          <div className="input-field">
+          <div className="input-field" id="userEntry">
             <label htmlFor="username">Username</label>
             <input type="username" id="username" onChange={this.handleChange} />
           </div>
@@ -73,7 +73,7 @@ class SignIn extends Component {
             <input type="password" id="password" onChange={this.handleChange} />
           </div>
           <div className="input-field">
-            <button className="btn pink lighten-1 z-depth-0">Login</button>
+            <Button className="btn pink lighten-1 z-depth-0">Login</Button>
             <div className="center red-text">
               {authError ? <p>{authError}</p> : null}
             </div>
