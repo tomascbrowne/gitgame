@@ -22,9 +22,27 @@ class level3 extends React.Component {
 
   componentDidUpdate = () => {
     if (this.state.firstTime == true) {
-      this.state.gitgraph._graph.author = "user";
-      this.state.gitgraph.commit("init");
+      const ne = this.state.gitgraph.branch("master");
+      console.log(ne);
+      this.setState({
+        currentBranch: "master"
+      });
+      // this.setState(state => {
+      //   var branches = state.branches.push(ne);
+      //   return {
+      //     branches
+      //   };
+      // });
+      var current = this.state.branches;
+      current.push(ne);
+      this.setState({ branches: current });
+      console.log(this.state);
+
+      ne._graph.author = "user";
+      ne.commit("init");
       this.setState({ firstTime: false });
+
+      //hard coded setup
       const merge = ["development", "feature_branch"];
       this.state.goalTree._graph.commits[
         this.state.goalTree._graph.commits.length - 1
@@ -35,6 +53,7 @@ class level3 extends React.Component {
 
   render() {
     const addCommit = message => {
+      console.log(this.state);
       if (this.state.currentBranch !== " ") {
         const branch = this.state.branches.find(
           b => b.name === this.state.currentBranch
@@ -46,6 +65,7 @@ class level3 extends React.Component {
           branch._graph.commits[branch._graph.commits.length - 1].merge = null;
         }
       } else if (message) {
+        // NONE THIS NEEDED ANYMORE
         this.state.gitgraph._graph.author = "user";
         this.state.gitgraph.commit(message);
         this.state.gitgraph._graph.commits[
@@ -86,13 +106,14 @@ class level3 extends React.Component {
         currentBranch: "",
         error: " ",
         hidden: false,
-        commands: []
+        commands: [],
+        firstTime: false
       });
     };
 
     const handleCheck = () => {
       const branch = this.state.gitgraph;
-      console.log(branch);
+      console.log(branch._graph.branches);
       if (
         this.state.goalTree._graph.commits.length ==
         branch._graph.commits.length
