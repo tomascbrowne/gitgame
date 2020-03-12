@@ -27,16 +27,10 @@ class level3 extends React.Component {
       this.setState({
         currentBranch: "master"
       });
-      // this.setState(state => {
-      //   var branches = state.branches.push(ne);
-      //   return {
-      //     branches
-      //   };
-      // });
       var current = this.state.branches;
       current.push(ne);
       this.setState({ branches: current });
-      console.log(this.state);
+      console.log(this.state.branches);
 
       ne._graph.author = "user";
       ne.commit("init");
@@ -113,7 +107,7 @@ class level3 extends React.Component {
 
     const handleCheck = () => {
       const branch = this.state.gitgraph;
-      console.log(branch._graph.branches);
+      console.log(this.state.branches);
       if (
         this.state.goalTree._graph.commits.length ==
         branch._graph.commits.length
@@ -340,6 +334,7 @@ class level3 extends React.Component {
                   disabled={this.state.hidden}
                   variant="outline-danger"
                   onClick={clear}
+                  href="/Level3"
                   block
                 >
                   clear

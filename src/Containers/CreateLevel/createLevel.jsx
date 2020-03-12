@@ -5,6 +5,9 @@ import "./level3-style.css";
 import { MDBContainer, MDBScrollbar } from "mdbreact";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import html2canvas from "html2canvas";
+import canvas2image from "canvas2image";
+import $ from "jquery";
 // eslint-disable @typescript-eslint/explicit-function-return-type
 
 class createLevel extends React.Component {
@@ -16,12 +19,32 @@ class createLevel extends React.Component {
       error: " ",
       goalTree: null,
       hidden: false,
-      commands: []
+      commands: [],
+      firstTime: true
     };
   }
 
+  componentDidUpdate = () => {
+    if (this.state.firstTime == true) {
+      const ne = this.state.gitgraph.branch("master");
+      console.log(ne);
+      this.setState({
+        currentBranch: "master"
+      });
+      var current = this.state.branches;
+      current.push(ne);
+      this.setState({ branches: current });
+      console.log(this.state.branches);
+
+      ne._graph.author = "user";
+      ne.commit("init");
+      this.setState({ firstTime: false });
+    }
+  };
+
   render() {
     const addCommit = message => {
+      console.log(this.state);
       if (this.state.currentBranch !== " ") {
         const branch = this.state.branches.find(
           b => b.name === this.state.currentBranch
@@ -30,10 +53,15 @@ class createLevel extends React.Component {
           console.log(branch);
           branch._graph.author = "user";
           branch.commit(message);
+          branch._graph.commits[branch._graph.commits.length - 1].merge = null;
         }
       } else if (message) {
+        // NONE THIS NEEDED ANYMORE
         this.state.gitgraph._graph.author = "user";
         this.state.gitgraph.commit(message);
+        this.state.gitgraph._graph.commits[
+          this.state.gitgraph._graph.commits.length - 1
+        ].merge = null;
       }
     };
 
@@ -49,6 +77,8 @@ class createLevel extends React.Component {
       const from = branches.find(from => from.name === currentBranch);
       const to = branches.find(to => to.name === destBranch);
       to.merge(from);
+      const merge = [from.name, to.name];
+      to._graph.commits[to._graph.commits.length - 1].merge = merge;
     };
 
     const checkBranch = name => {
@@ -76,8 +106,36 @@ class createLevel extends React.Component {
       this.setState({ hidden: newHidden });
     };
 
+    // const handleProps = () => {
+    //   this.props.setGraph({ data: this.state.gitgraph });
+
+    //   const graph = document.querySelector("#graph2save");
+
+    //   html2canvas(graph).then(function(canvas) {
+    //     console.log(canvas);
+    //     var image = canvas2image.convertToPNG(
+    //       canvas,
+    //       graph.offsetWidth,
+    //       graph.offsetHeight
+    //     );
+    //     var image_data = $(image).attr(
+    //       "/src/Containers/CreateLevel/CustomLevel"
+    //     );
+    //   });
+    // };
+
     const handleProps = () => {
-      this.props.setGraph({ data: this.state.gitgraph });
+      const graph = document.querySelector("#graph2save");
+      var ne = [];
+      html2canvas(graph).then(function(canvas) {
+        console.log(canvas);
+        //saveAs(canvas.toDataURL(), "graph.png");
+
+        ne.push(canvas.toDataURL());
+      });
+      ne.push(this.state.gitgraph);
+
+      this.props.setGraph({ data: ne });
     };
 
     const handleCommand = () => {
@@ -209,6 +267,7 @@ class createLevel extends React.Component {
         <Row id="main" lg={{ span: 12 }}>
           <Col align="center">
             <div className="pl-4 pr-4 card card-block d-table-cell">
+              <p>Current Branch: {this.state.currentBranch}</p>
               <MDBContainer>
                 <div
                   className="scrollbar my-5 mx-auto"
@@ -234,14 +293,14 @@ class createLevel extends React.Component {
                     value={this.state.command}
                     onChange={handleChange("command")}
                   />
-                  <Button
+                  <button
                     id="commandButton"
                     variant="dark"
                     size="sm"
                     disabled={this.state.hidden}
                   >
                     Enter Command
-                  </Button>
+                  </button>
                 </center>
               </form>
             </div>
@@ -259,12 +318,12 @@ class createLevel extends React.Component {
                 </Link>
               </Col>
             </Row>
-
-            <div>{this.state.currentBranch}</div>
           </Col>
 
           <Col align="center">
-            <Gitgraph>{gitgraph => this.setState({ gitgraph })}</Gitgraph>
+            <div id="graph2save">
+              <Gitgraph>{gitgraph => this.setState({ gitgraph })}</Gitgraph>
+            </div>
           </Col>
         </Row>
       </div>

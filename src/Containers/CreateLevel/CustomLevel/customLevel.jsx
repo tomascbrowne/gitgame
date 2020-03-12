@@ -4,8 +4,8 @@ import { Row, Col, Button } from "react-bootstrap";
 import "./level3-style.css";
 import { MDBContainer, MDBScrollbar } from "mdbreact";
 import { connect } from "react-redux";
-import { useSelector } from "react-redux";
-// eslint-disable @typescript-eslint/explicit-function-return-type
+import Popup from "reactjs-popup";
+import goal from "./graph.png";
 
 class customLevel extends React.Component {
   constructor() {
@@ -16,17 +16,35 @@ class customLevel extends React.Component {
       error: " ",
       goalTree: null,
       hidden: false,
-      commands: []
+      commands: [],
+      firstTime: true
     };
   }
 
-  componentDidMount = prevProps => {
-    this.setState({ goalTree: this.props.graph });
+  componentDidUpdate = () => {
+    console.log(this.props.graph);
+    if (this.state.firstTime == true) {
+      const ne = this.state.gitgraph.branch("master");
+      console.log(ne);
+      this.setState({
+        currentBranch: "master"
+      });
+      var current = this.state.branches;
+      current.push(ne);
+      this.setState({ branches: current });
+      console.log(this.state.branches);
+
+      ne._graph.author = "user";
+      ne.commit("init");
+      this.setState({ firstTime: false });
+
+      console.log(this.props.graph);
+    }
   };
 
   render() {
-    // this.getGraph();
     const addCommit = message => {
+      console.log(this.state);
       if (this.state.currentBranch !== " ") {
         const branch = this.state.branches.find(
           b => b.name === this.state.currentBranch
@@ -35,10 +53,15 @@ class customLevel extends React.Component {
           console.log(branch);
           branch._graph.author = "user";
           branch.commit(message);
+          branch._graph.commits[branch._graph.commits.length - 1].merge = null;
         }
       } else if (message) {
+        // NONE THIS NEEDED ANYMORE
         this.state.gitgraph._graph.author = "user";
         this.state.gitgraph.commit(message);
+        this.state.gitgraph._graph.commits[
+          this.state.gitgraph._graph.commits.length - 1
+        ].merge = null;
       }
     };
 
@@ -54,6 +77,8 @@ class customLevel extends React.Component {
       const from = branches.find(from => from.name === currentBranch);
       const to = branches.find(to => to.name === destBranch);
       to.merge(from);
+      const merge = [from.name, to.name];
+      to._graph.commits[to._graph.commits.length - 1].merge = merge;
     };
 
     const checkBranch = name => {
@@ -72,24 +97,43 @@ class customLevel extends React.Component {
         currentBranch: "",
         error: " ",
         hidden: false,
-        commands: []
+        commands: [],
+        firstTime: true
       });
     };
 
     const handleCheck = () => {
       const branch = this.state.gitgraph;
-      console.log(branch._graph.commits);
+      console.log(this.state.branches);
       if (
-        this.state.goalTree._graph.commits.length ==
+        this.props.graph[0]._graph.commits.length ==
         branch._graph.commits.length
       ) {
         for (const [
           index,
           value
-        ] of this.state.goalTree._graph.commits.entries()) {
+        ] of this.props.graph[0]._graph.commits.entries()) {
           if (value.refs[0] != branch._graph.commits[index].refs[0]) {
             return alert("They don't match");
           }
+          //merge comparison
+          if (
+            value.merge != null &&
+            branch._graph.commits[index].merge != null
+          ) {
+            if (
+              value.merge[0] != branch._graph.commits[index].merge[0] ||
+              value.merge[1] != branch._graph.commits[index].merge[1]
+            )
+              return alert("They don't match");
+          } else if (
+            (value.merge == null &&
+              branch._graph.commits[index].merge != null) ||
+            (value.merge != null && branch._graph.commits[index].merge == null)
+          ) {
+            return alert("They don't match");
+          }
+          //merge comparison
         }
         return alert("They DO match!");
       } else {
@@ -97,10 +141,19 @@ class customLevel extends React.Component {
       }
     };
 
-    const handleHidden = () => {
+    function toggleDisplay() {
+      var x = document.getElementById("graphHide");
+      var y = document.getElementById("graphHide2");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.display = "none";
+      } else {
+        x.style.display = "none";
+        y.style.display = "block";
+      }
       const newHidden = !this.state.hidden;
       this.setState({ hidden: newHidden });
-    };
+    }
 
     const handleCommand = () => {
       this.setState({
@@ -215,8 +268,7 @@ class customLevel extends React.Component {
       });
     };
 
-    const gitgraph2 = this.props.graph;
-    console.log(gitgraph2);
+    //console.log(gitgraph2);
     const options = {
       mode: Mode.Compact
     };
@@ -233,6 +285,7 @@ class customLevel extends React.Component {
         <Row id="main" lg={{ span: 12 }}>
           <Col align="center">
             <div className="pl-4 pr-4 card card-block d-table-cell">
+              <p>Current Branch: {this.state.currentBranch}</p>
               <MDBContainer>
                 <div
                   className="scrollbar my-5 mx-auto"
@@ -254,24 +307,30 @@ class customLevel extends React.Component {
                 <center>
                   <p id="error">{this.state.error}</p>
                   <input
+                    id="commandInput"
                     type="text"
                     value={this.state.command}
                     onChange={handleChange("command")}
                   />
-                  <Button
+                  <button
                     id="commandButton"
                     variant="dark"
                     size="sm"
                     disabled={this.state.hidden}
                   >
                     Enter Command
-                  </Button>
+                  </button>
                 </center>
               </form>
             </div>
             <Row id="clear_button">
               <Col>
-                <Button variant="outline-danger" onClick={clear} block>
+                <Button
+                  disabled={this.state.hidden}
+                  variant="outline-danger"
+                  onClick={clear}
+                  block
+                >
                   clear
                 </Button>
               </Col>
@@ -281,14 +340,56 @@ class customLevel extends React.Component {
                 </Button>
               </Col>
             </Row>
-
-            <div>{this.state.currentBranch}</div>
+            <Button
+              onClick={toggleDisplay.bind(this)}
+              variant="warning"
+              id="show"
+            >
+              show me the money
+            </Button>
+            <Popup
+              trigger={
+                <Button variant="warning" id="help">
+                  Help
+                </Button>
+              }
+              modal
+              closeOnDocumentClick
+            >
+              <div id="helpTop">
+                <span> Help Menu </span>
+              </div>
+              <br></br>
+              <a>Commit: git commit -m 'message'</a>
+              <br></br>
+              <a>
+                Branch: git branch {"<"}branch_name{">"}
+              </a>
+              <br></br>
+              <a>
+                Checkout: git checkout {"<"}branch_name{">"}{" "}
+              </a>
+              <br></br>
+              <a>
+                Merge: git merge {"<"}branch_name{">"}
+              </a>
+              <br></br>
+              <span> OR </span>
+              <br></br>
+              <a>
+                Merge: git merge {"<"}
+                branch_name{">"} {"<"}branch_name{">"}
+              </a>
+            </Popup>
           </Col>
 
           <Col align="center">
-            <Gitgraph>{gitgraph => this.setState({ gitgraph })}</Gitgraph>
-
-            <Gitgraph>{gitgraph2 => this.setState({ gitgraph2 })}</Gitgraph>
+            <div id="graphHide">
+              <Gitgraph>{gitgraph => this.setState({ gitgraph })}</Gitgraph>
+            </div>
+            <div id="graphHide2">
+              <img src={this.props.graph[1]} />
+            </div>
           </Col>
         </Row>
       </div>

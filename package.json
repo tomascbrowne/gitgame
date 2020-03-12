@@ -5,8 +5,11 @@
   "dependencies": {
     "@gitgraph/react": "^1.5.2",
     "bootstrap": "^4.4.1",
+    "canvas2image": "^1.0.5",
     "confetti-js": "0.0.17",
     "firebase": "^7.8.2",
+    "html2canvas": "^1.0.0-rc.5",
+    "jquery": "^3.4.1",
     "mdbreact": "^4.25.3",
     "react": "^16.12.0",
     "react-bootstrap": "^1.0.0-beta.16",
