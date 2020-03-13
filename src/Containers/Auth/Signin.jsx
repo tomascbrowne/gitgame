@@ -1,16 +1,15 @@
 import React, { Component } from "react";
 import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import "./signin.module.css";
 import { connect } from "react-redux";
 import { signIn } from "../../Store/actions/authActions";
+import { Link } from "react-router-dom";
 
 class SignIn extends Component {
   state = {
     username: "",
-    password: ""
+    password: "",
+    redirect: false
   };
 
   handleChange = e => {
@@ -18,65 +17,57 @@ class SignIn extends Component {
       [e.target.id]: e.target.value
     });
   };
+
   handleSubmit = e => {
     e.preventDefault();
     this.props.signIn(this.state);
   };
+
+  handleLoginRoute = () => {
+    if (this.props.authError == null) {
+      this.setState({ redirect: true });
+    }
+  };
+
   render() {
+    const containerStyle = {
+      maxWidth: "400px",
+      paddingTop: "20px"
+    };
     const authError = this.props.authError;
+
+    if (this.state.redirect == true) {
+      return <Link to="" />;
+    }
+
     return (
-      //   <div className={styles.loginContainer}>
-      //     <label htmlFor="basic-url">Sign in</label>
-      //     <Form onSubmit={this.handleSubmit}>
-      //       <Form.Group as={Row} controlId="formPlaintextUsername">
-      //         <Form.Label column sm="2">
-      //           Username
-      //         </Form.Label>
-      //         <Col>
-      //           <Form.Control
-      //             type="username"
-      //             placeholder="Username"
-      //             className={styles.inputBox}
-      //             onChange={this.handleChange.bind(this)}
-      //           />
-      //         </Col>
-      //       </Form.Group>
-      //       <Form.Group as={Row} controlId="formPlaintextPassword">
-      //         <Form.Label column sm="2">
-      //           Password
-      //         </Form.Label>
-      //         <Col>
-      //           <Form.Control
-      //             type="password"
-      //             placeholder="Password"
-      //             className={styles.inputBox}
-      //             onChange={this.handleChange.bind(this)}
-      //           />
-      //         </Col>
-      //       </Form.Group>
-      //       <div className="input-field">
-      //         <Button variant="secondary" type="submit">
-      //           Login
-      //         </Button>{" "}
-      //       </div>
-      //     </Form>
-      //   </div>
-      <div className="container">
+      <div className="container" style={containerStyle} align="left">
         <form className="white" onSubmit={this.handleSubmit}>
           <h5 className="grey-text text-darken-3">Sign In</h5>
-          <div className="input-field" id="userEntry">
+          <div className="form-group" id="userEntry">
             <label htmlFor="username">Username</label>
-            <input type="username" id="username" onChange={this.handleChange} />
+            <input
+              className="form-control"
+              type="username"
+              id="username"
+              onChange={this.handleChange}
+            />
           </div>
-          <div className="input-field">
+          <div className="form-group">
             <label htmlFor="password">Password</label>
-            <input type="password" id="password" onChange={this.handleChange} />
+            <input
+              className="form-control"
+              type="password"
+              id="password"
+              onChange={this.handleChange}
+            />
           </div>
-          <div className="input-field">
-            <Button className="btn pink lighten-1 z-depth-0">Login</Button>
-            <div className="center red-text">
-              {authError ? <p>{authError}</p> : null}
-            </div>
+          <Button type="submit" className="btn pink lighten-1 z-depth-0">
+            Login
+          </Button>
+
+          <div className="center red-text">
+            {authError ? <p>{authError}</p> : null}
           </div>
         </form>
       </div>

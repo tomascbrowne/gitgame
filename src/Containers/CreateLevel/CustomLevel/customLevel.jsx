@@ -5,7 +5,6 @@ import "./level3-style.css";
 import { MDBContainer, MDBScrollbar } from "mdbreact";
 import { connect } from "react-redux";
 import Popup from "reactjs-popup";
-import goal from "./graph.png";
 
 class customLevel extends React.Component {
   constructor() {
@@ -345,7 +344,7 @@ class customLevel extends React.Component {
               variant="warning"
               id="show"
             >
-              show me the money
+              show goal
             </Button>
             <Popup
               trigger={

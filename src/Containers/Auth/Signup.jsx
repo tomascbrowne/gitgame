@@ -23,60 +23,39 @@ class SignUp extends Component {
     this.props.signUp(this.state);
   };
   render() {
+    const containerStyle = {
+      maxWidth: "400px",
+      paddingTop: "20px"
+    };
     const authError = this.props.authError;
     return (
-      // This form looks PENG but don't work so we back on ugly
-      //
-      // <div className={styles.loginContainer}>
-      //   <label htmlFor="basic-url">Sign up</label>
-      //   <Form onSubmit={this.handleSubmit}>
-      //     <Form.Group as={Row} controlId="formPlaintextUsername">
-      //       <Form.Label column sm="2">
-      //         Username
-      //       </Form.Label>
-      //       <Col>
-      //         <Form.Control
-      //           type="username"
-      //           placeholder="Username"
-      //           className={styles.inputBox}
-      //         />
-      //       </Col>
-      //     </Form.Group>
-      //     <Form.Group as={Row} controlId="formPlaintextPassword">
-      //       <Form.Label column sm="2">
-      //         Password
-      //       </Form.Label>
-      //       <Col>
-      //         <Form.Control
-      //           type="password"
-      //           placeholder="Password"
-      //           className={styles.inputBox}
-      //         />
-      //       </Col>
-      //     </Form.Group>
-      //     <div className="input-field">
-      //       <Button variant="secondary" type="submit">
-      //         Sign Up
-      //       </Button>{" "}
-      //     </div>
-      //   </Form>
-      // </div>
-      <div className="container">
+      <div className="container" style={containerStyle} align="left">
         <form className="white" onSubmit={this.handleSubmit}>
           <h5 className="grey-text text-darken-3">Sign Up</h5>
-          <div className="input-field">
+          <div className="form-group" id="userEntry">
             <label htmlFor="username">Username</label>
-            <input type="username" id="username" onChange={this.handleChange} />
+            <input
+              className="form-control"
+              type="username"
+              id="username"
+              onChange={this.handleChange}
+            />
           </div>
-          <div className="input-field">
+          <div className="form-group">
             <label htmlFor="password">Password</label>
-            <input type="password" id="password" onChange={this.handleChange} />
+            <input
+              className="form-control"
+              type="password"
+              id="password"
+              onChange={this.handleChange}
+            />
           </div>
-          <div className="input-field">
-            <button className="btn pink lighten-1 z-depth-0">Signup</button>
-            <div className="center red-text">
-              {authError ? <p>{authError}</p> : null}
-            </div>
+          <Button type="submit" className="btn pink lighten-1 z-depth-0">
+            Sign Up
+          </Button>
+
+          <div className="center red-text">
+            {authError ? <p>{authError}</p> : null}
           </div>
         </form>
       </div>

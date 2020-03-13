@@ -6,6 +6,8 @@ import Home from "./Home/Home";
 import Level1 from "./Level1/Level1";
 import Level2 from "./Level2/Level2";
 import Level3 from "./Level3/Level3";
+import Level4 from "./Level4/Level4";
+import Level5 from "./Level5/Level5";
 import SignIn from "./Auth/Signin";
 import SignUp from "./Auth/Signup";
 import CreateLevel from "./CreateLevel/createLevel";
@@ -41,6 +43,8 @@ const game = props => {
       <Route path="/Level1" exact render={() => <Level1 />} />
       <Route path="/Level2" exact render={() => <Level2 />} />
       <Route path="/Level3" exact render={() => <Level3 />} />
+      <Route path="/Level4" exact render={() => <Level4 />} />
+      <Route path="/Level5" exact render={() => <Level5 />} />
       <Route path="/Signin" exact render={() => <SignIn />} />
       <Route path="/Signup" exact render={() => <SignUp />} />
       <Route path="/CreateLevel" exact render={() => <CreateLevel />} />

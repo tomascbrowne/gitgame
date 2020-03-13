@@ -6,7 +6,7 @@ import { MDBContainer, MDBScrollbar } from "mdbreact";
 import Popup from "reactjs-popup";
 // eslint-disable @typescript-eslint/explicit-function-return-type
 
-class level3 extends React.Component {
+class level4 extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -23,21 +23,19 @@ class level3 extends React.Component {
   componentDidUpdate = () => {
     if (this.state.firstTime == true) {
       const ne = this.state.gitgraph.branch("master");
-      console.log(ne);
       this.setState({
         currentBranch: "master"
       });
       var current = this.state.branches;
       current.push(ne);
       this.setState({ branches: current });
-      console.log(this.state.branches);
 
       ne._graph.author = "user";
       ne.commit("init");
       this.setState({ firstTime: false });
 
       //hard coded setup
-      const merge = ["development", "feature_branch"];
+      const merge = ["development", "master"];
       this.state.goalTree._graph.commits[
         this.state.goalTree._graph.commits.length - 1
       ].merge = merge;
@@ -47,13 +45,11 @@ class level3 extends React.Component {
 
   render() {
     const addCommit = message => {
-      console.log(this.state);
       if (this.state.currentBranch !== " ") {
         const branch = this.state.branches.find(
           b => b.name === this.state.currentBranch
         );
         if (branch) {
-          console.log(branch);
           branch._graph.author = "user";
           branch.commit(message);
           branch._graph.commits[branch._graph.commits.length - 1].merge = null;
@@ -398,16 +394,14 @@ class level3 extends React.Component {
                 {baseTree => {
                   const master = baseTree.branch("master");
 
-                  master.commit("Add tests");
+                  master.commit("Init");
 
                   const development = baseTree.branch("development");
 
-                  development.commit("Init");
+                  development.commit("Some changes");
+                  development.commit("Some other changes");
 
-                  const feature = baseTree.branch("feature_branch");
-
-                  feature.commit("Added some cool stuff");
-                  feature.merge(development);
+                  master.merge(development);
 
                   this.setState({ goalTree: baseTree });
                 }}
@@ -420,4 +414,4 @@ class level3 extends React.Component {
   }
 }
 
-export default level3;
+export default level4;
