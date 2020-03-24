@@ -4,6 +4,7 @@ import { Row, Col, Button } from "react-bootstrap";
 import "./level3-style.css";
 import { MDBContainer, MDBScrollbar } from "mdbreact";
 import Popup from "reactjs-popup";
+import { connect } from "react-redux";
 
 class level5 extends React.Component {
   constructor() {
@@ -38,6 +39,10 @@ class level5 extends React.Component {
       this.state.goalTree._graph.commits[
         this.state.goalTree._graph.commits.length - 1
       ].merge = merge;
+      const merge2 = ["feature", "development"];
+      this.state.goalTree._graph.commits[
+        this.state.goalTree._graph.commits.length - 2
+      ].merge = merge2;
       console.log(this.state.goalTree);
     }
   };
@@ -49,13 +54,13 @@ class level5 extends React.Component {
           b => b.name === this.state.currentBranch
         );
         if (branch) {
-          branch._graph.author = "user";
+          branch._graph.author = this.props.profile.name;
           branch.commit(message);
           branch._graph.commits[branch._graph.commits.length - 1].merge = null;
         }
       } else if (message) {
         // NONE THIS NEEDED ANYMORE
-        this.state.gitgraph._graph.author = "user";
+        this.state.gitgraph._graph.author = this.props.profile.name;
         this.state.gitgraph.commit(message);
         this.state.gitgraph._graph.commits[
           this.state.gitgraph._graph.commits.length - 1
@@ -174,7 +179,11 @@ class level5 extends React.Component {
           }
           case "commit": {
             if (array[index + 1] === "-m") {
-              addCommit(array[index + 2]);
+              let string = "";
+              for (let i = 2; i < array.length; i++) {
+                string += " " + array[index + i];
+              }
+              addCommit(string);
             }
             this.setState({ error: " " });
             return;
@@ -329,7 +338,7 @@ class level5 extends React.Component {
                   disabled={this.state.hidden}
                   variant="outline-danger"
                   onClick={clear}
-                  href="/Level3"
+                  href="/Level5"
                   block
                 >
                   clear
@@ -372,13 +381,13 @@ class level5 extends React.Component {
               </a>
               <br></br>
               <a>
-                Megre: git merge {"<"}branch_name{">"}
+                Merge: git merge {"<"}branch_name{">"}
               </a>
               <br></br>
               <span> OR </span>
               <br></br>
               <a>
-                Megre: git merge {"<"}
+                Merge: git merge {"<"}
                 branch_name{">"} {"<"}branch_name{">"}
               </a>
             </Popup>
@@ -398,7 +407,13 @@ class level5 extends React.Component {
                   const development = baseTree.branch("development");
 
                   development.commit("Some changes");
-                  development.commit("Some other changes");
+
+                  const feature = baseTree.branch("feature");
+
+                  feature.commit("Some changes");
+                  feature.commit("Some changes");
+
+                  development.merge(feature);
 
                   master.merge(development);
 
@@ -413,4 +428,10 @@ class level5 extends React.Component {
   }
 }
 
-export default level5;
+const mapStateToProps = state => {
+  return {
+    profile: state.firebase.profile
+  };
+};
+
+export default connect(mapStateToProps)(level5);

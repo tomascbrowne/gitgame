@@ -5,6 +5,7 @@ import "./level3-style.css";
 import { MDBContainer, MDBScrollbar } from "mdbreact";
 import { connect } from "react-redux";
 import Popup from "reactjs-popup";
+import { Redirect } from "react-router-dom";
 
 class customLevel extends React.Component {
   constructor() {
@@ -175,7 +176,11 @@ class customLevel extends React.Component {
           }
           case "commit": {
             if (array[index + 1] === "-m") {
-              addCommit(array[index + 2]);
+              let string = "";
+              for (let i = 2; i < array.length; i++) {
+                string += " " + array[index + i];
+              }
+              addCommit(string);
             }
             this.setState({ error: " " });
             return;
@@ -279,6 +284,8 @@ class customLevel extends React.Component {
       outlineStyle: "auto",
       outlineColor: "grey"
     };
+    const { profile } = this.props;
+    if (!profile.ta) return <Redirect to="" />;
     return (
       <div id="content" className="level3-style container fluid">
         <Row id="main" lg={{ span: 12 }}>
@@ -398,7 +405,8 @@ class customLevel extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    graph: state.graph.graph.data
+    graph: state.graph.graph.data,
+    profile: state.firebase.profile
   };
 };
 

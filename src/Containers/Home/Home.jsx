@@ -47,6 +47,8 @@ class home extends Component {
           master.commit({
             subject: "Level 1",
             renderMessage: renderMessage,
+            dotText: "1",
+            body: "click on the commit to enter the level!",
             onClick: this.onCommitClick.bind(this, "level1")
           });
 
@@ -55,18 +57,21 @@ class home extends Component {
           development.commit({
             subject: "Level 2",
             renderMessage: renderMessage,
+            dotText: "2",
             onClick: this.onCommitClick.bind(this, "level2")
           });
 
           development.commit({
             subject: "Level 3",
             renderMessage: renderMessage,
+            dotText: "3",
             onClick: this.onCommitClick.bind(this, "level3")
           });
 
           development.commit({
             subject: "Level 4",
             renderMessage: renderMessage,
+            dotText: "4",
             onClick: this.onCommitClick.bind(this, "level4")
           });
 
@@ -79,14 +84,20 @@ class home extends Component {
           master.commit({
             subject: "Level 5",
             renderMessage: renderMessage,
+            dotText: "5",
             onClick: this.onCommitClick.bind(this, "level5")
           });
 
           master.commit({
             subject: "Level 6",
             renderMessage: renderMessage,
+            renderTooltip: "click on the commit to enter the level!",
+            dotText: "6",
             onClick: this.onCommitClick.bind(this, "level6")
           });
+          console.log(tree0._graph.commits);
+          tree0._graph.commits[4].subject =
+            "Click on a commit to enter a level";
         }}
       </Gitgraph>
     );

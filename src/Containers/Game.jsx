@@ -14,9 +14,10 @@ import CreateLevel from "./CreateLevel/createLevel";
 import CustomLevel from "./CreateLevel/CustomLevel/customLevel";
 import { connect } from "react-redux";
 import { signOut } from "../Store/actions/authActions";
+import Tutorial from "./Tutorial/tutorial";
 
 const game = props => {
-  const { auth } = props;
+  const { auth, profile } = props;
   const links = auth.uid ? (
     <Nav.Link href="/" onClick={props.signOut}>
       Log Out
@@ -27,6 +28,12 @@ const game = props => {
       <Nav.Link href="/Signup">Sign Up</Nav.Link>
     </>
   );
+  const creator = profile.ta ? (
+    <Nav.Link href="/CreateLevel">Create Level</Nav.Link>
+  ) : (
+    <></>
+  );
+
   return (
     <div>
       <Navbar bg="dark" variant="dark" expand="lg">
@@ -34,10 +41,14 @@ const game = props => {
 
         <Navbar.Collapse>
           <Nav className="mr-auto navbar-right">
-            <Nav className="mr-auto navbar-right">{links}</Nav>
-            <Nav.Link href="/CreateLevel">Create Level</Nav.Link>
+            <Nav className="mr-auto navbar-right">
+              {links}
+              {creator}
+            </Nav>
+            <Nav.Link href="/Tutorial">Tutorial</Nav.Link>
           </Nav>
         </Navbar.Collapse>
+        <Navbar.Text> Score: {profile.score}</Navbar.Text>
       </Navbar>
       <Route path="/" exact render={() => <Home />} />
       <Route path="/Level1" exact render={() => <Level1 />} />
@@ -48,6 +59,7 @@ const game = props => {
       <Route path="/Signin" exact render={() => <SignIn />} />
       <Route path="/Signup" exact render={() => <SignUp />} />
       <Route path="/CreateLevel" exact render={() => <CreateLevel />} />
+      <Route path="/Tutorial" exact render={() => <Tutorial />} />
       <Route
         path="/CreateLevel/CustomLevel"
         render={props => <CustomLevel {...props} />}
@@ -58,7 +70,8 @@ const game = props => {
 
 const mapStateToProps = state => {
   return {
-    auth: state.firebase.auth
+    auth: state.firebase.auth,
+    profile: state.firebase.profile
   };
 };
 

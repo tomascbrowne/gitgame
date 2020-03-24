@@ -4,7 +4,7 @@ import { Row, Col, Button } from "react-bootstrap";
 import "./level3-style.css";
 import { MDBContainer, MDBScrollbar } from "mdbreact";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import html2canvas from "html2canvas";
 import canvas2image from "canvas2image";
 import $ from "jquery";
@@ -106,24 +106,6 @@ class createLevel extends React.Component {
       this.setState({ hidden: newHidden });
     };
 
-    // const handleProps = () => {
-    //   this.props.setGraph({ data: this.state.gitgraph });
-
-    //   const graph = document.querySelector("#graph2save");
-
-    //   html2canvas(graph).then(function(canvas) {
-    //     console.log(canvas);
-    //     var image = canvas2image.convertToPNG(
-    //       canvas,
-    //       graph.offsetWidth,
-    //       graph.offsetHeight
-    //     );
-    //     var image_data = $(image).attr(
-    //       "/src/Containers/CreateLevel/CustomLevel"
-    //     );
-    //   });
-    // };
-
     const handleProps = () => {
       const graph = document.querySelector("#graph2save");
       var ne = [];
@@ -159,7 +141,11 @@ class createLevel extends React.Component {
           }
           case "commit": {
             if (array[index + 1] === "-m") {
-              addCommit(array[index + 2]);
+              let string = "";
+              for (let i = 2; i < array.length; i++) {
+                string += " " + array[index + i];
+              }
+              addCommit(string);
             }
             this.setState({ error: " " });
             return;
@@ -262,6 +248,7 @@ class createLevel extends React.Component {
       outlineStyle: "auto",
       outlineColor: "grey"
     };
+
     return (
       <div id="content" className="level3-style container fluid">
         <Row id="main" lg={{ span: 12 }}>
@@ -331,6 +318,12 @@ class createLevel extends React.Component {
   }
 }
 
+const mapStateToProps = state => {
+  return {
+    profile: state.firebase.profile
+  };
+};
+
 function mapDispatchToProps(dispatch) {
   console.log("dispatch method entered");
   return {
@@ -340,4 +333,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(null, mapDispatchToProps)(createLevel);
+export default connect(mapStateToProps, mapDispatchToProps)(createLevel);

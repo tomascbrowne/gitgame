@@ -3,9 +3,10 @@ import firebase from "firebase";
 export const signIn = credentials => {
   return (dispatch, getState) => {
     console.log(credentials);
+    const username = credentials.username.concat("@fake.com");
     firebase
       .auth()
-      .signInWithEmailAndPassword(credentials.username, credentials.password)
+      .signInWithEmailAndPassword(username, credentials.password)
       .then(() => {
         dispatch({ type: "LOGIN_SUCCESS" });
       })
@@ -31,16 +32,19 @@ export const signUp = user => {
   return (dispatch, getState, { getFirestore }) => {
     const firestore = firebase.firestore();
     console.log(user);
+    const username = user.username.concat("@fake.com");
     firebase
       .auth()
-      .createUserWithEmailAndPassword(user.username, user.password)
+      .createUserWithEmailAndPassword(username, user.password)
       .then(response => {
         return firestore
           .collection("users")
           .doc(response.user.uid)
           .set({
+            name: user.username,
             score: 0,
-            levelsCleared: 0
+            levelsCleared: 0,
+            ta: false
           });
       })
       .then(() => {

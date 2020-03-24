@@ -4,6 +4,7 @@ import { Row, Col, Button } from "react-bootstrap";
 import "./level3-style.css";
 import { MDBContainer, MDBScrollbar } from "mdbreact";
 import Popup from "reactjs-popup";
+import { connect } from "react-redux";
 // eslint-disable @typescript-eslint/explicit-function-return-type
 
 class level3 extends React.Component {
@@ -32,12 +33,12 @@ class level3 extends React.Component {
       this.setState({ branches: current });
       console.log(this.state.branches);
 
-      ne._graph.author = "user";
+      ne._graph.author = "";
       ne.commit("init");
       this.setState({ firstTime: false });
 
       //hard coded setup
-      const merge = ["development", "feature_branch"];
+      const merge = ["development", "master"];
       this.state.goalTree._graph.commits[
         this.state.goalTree._graph.commits.length - 1
       ].merge = merge;
@@ -54,13 +55,13 @@ class level3 extends React.Component {
         );
         if (branch) {
           console.log(branch);
-          branch._graph.author = "user";
+          branch._graph.author = this.props.profile.name;
           branch.commit(message);
           branch._graph.commits[branch._graph.commits.length - 1].merge = null;
         }
       } else if (message) {
         // NONE THIS NEEDED ANYMORE
-        this.state.gitgraph._graph.author = "user";
+        this.state.gitgraph._graph.author = this.props.profile.name;
         this.state.gitgraph.commit(message);
         this.state.gitgraph._graph.commits[
           this.state.gitgraph._graph.commits.length - 1
@@ -179,7 +180,11 @@ class level3 extends React.Component {
           }
           case "commit": {
             if (array[index + 1] === "-m") {
-              addCommit(array[index + 2]);
+              let string = "";
+              for (let i = 2; i < array.length; i++) {
+                string += " " + array[index + i];
+              }
+              addCommit(string);
             }
             this.setState({ error: " " });
             return;
@@ -377,13 +382,13 @@ class level3 extends React.Component {
               </a>
               <br></br>
               <a>
-                Megre: git merge {"<"}branch_name{">"}
+                Merge: git merge {"<"}branch_name{">"}
               </a>
               <br></br>
               <span> OR </span>
               <br></br>
               <a>
-                Megre: git merge {"<"}
+                Merge: git merge {"<"}
                 branch_name{">"} {"<"}branch_name{">"}
               </a>
             </Popup>
@@ -398,16 +403,14 @@ class level3 extends React.Component {
                 {baseTree => {
                   const master = baseTree.branch("master");
 
-                  master.commit("Add tests");
+                  master.commit("Init");
 
                   const development = baseTree.branch("development");
 
-                  development.commit("Init");
+                  development.commit("Some changes");
+                  development.commit("Some other changes");
 
-                  const feature = baseTree.branch("feature_branch");
-
-                  feature.commit("Added some cool stuff");
-                  feature.merge(development);
+                  master.merge(development);
 
                   this.setState({ goalTree: baseTree });
                 }}
@@ -420,4 +423,10 @@ class level3 extends React.Component {
   }
 }
 
-export default level3;
+const mapStateToProps = state => {
+  return {
+    profile: state.firebase.profile
+  };
+};
+
+export default connect(mapStateToProps)(level3);
