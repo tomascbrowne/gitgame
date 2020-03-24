@@ -3,11 +3,11 @@ import { Gitgraph, Mode } from "@gitgraph/react";
 import { Row, Col, Button } from "react-bootstrap";
 import "./level3-style.css";
 import { MDBContainer, MDBScrollbar } from "mdbreact";
-import Popup from "reactjs-popup";
 import { connect } from "react-redux";
-// eslint-disable @typescript-eslint/explicit-function-return-type
+import Popup from "reactjs-popup";
+import { Redirect } from "react-router-dom";
 
-class level3 extends React.Component {
+class customLevel extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -22,6 +22,7 @@ class level3 extends React.Component {
   }
 
   componentDidUpdate = () => {
+    console.log(this.props.graph);
     if (this.state.firstTime == true) {
       const ne = this.state.gitgraph.branch("master");
       console.log(ne);
@@ -33,16 +34,11 @@ class level3 extends React.Component {
       this.setState({ branches: current });
       console.log(this.state.branches);
 
-      ne._graph.author = "";
+      ne._graph.author = "user";
       ne.commit("init");
       this.setState({ firstTime: false });
 
-      //hard coded setup
-      const merge = ["development", "master"];
-      this.state.goalTree._graph.commits[
-        this.state.goalTree._graph.commits.length - 1
-      ].merge = merge;
-      console.log(this.state.goalTree);
+      console.log(this.props.graph);
     }
   };
 
@@ -55,13 +51,13 @@ class level3 extends React.Component {
         );
         if (branch) {
           console.log(branch);
-          branch._graph.author = this.props.profile.name;
+          branch._graph.author = "user";
           branch.commit(message);
           branch._graph.commits[branch._graph.commits.length - 1].merge = null;
         }
       } else if (message) {
         // NONE THIS NEEDED ANYMORE
-        this.state.gitgraph._graph.author = this.props.profile.name;
+        this.state.gitgraph._graph.author = "user";
         this.state.gitgraph.commit(message);
         this.state.gitgraph._graph.commits[
           this.state.gitgraph._graph.commits.length - 1
@@ -102,7 +98,7 @@ class level3 extends React.Component {
         error: " ",
         hidden: false,
         commands: [],
-        firstTime: false
+        firstTime: true
       });
     };
 
@@ -110,13 +106,13 @@ class level3 extends React.Component {
       const branch = this.state.gitgraph;
       console.log(this.state.branches);
       if (
-        this.state.goalTree._graph.commits.length ==
+        this.props.graph[0]._graph.commits.length ==
         branch._graph.commits.length
       ) {
         for (const [
           index,
           value
-        ] of this.state.goalTree._graph.commits.entries()) {
+        ] of this.props.graph[0]._graph.commits.entries()) {
           if (value.refs[0] != branch._graph.commits[index].refs[0]) {
             return alert("They don't match");
           }
@@ -276,7 +272,7 @@ class level3 extends React.Component {
       });
     };
 
-    const branches = this.state.branches;
+    //console.log(gitgraph2);
     const options = {
       mode: Mode.Compact
     };
@@ -284,12 +280,12 @@ class level3 extends React.Component {
       width: "100%",
       height: "100px",
       maxHeight: "100px",
-      marginTop: "20px",
       padding: "10px",
       outlineStyle: "auto",
       outlineColor: "grey"
     };
-
+    const { profile } = this.props;
+    if (!profile.ta) return <Redirect to="" />;
     return (
       <div id="content" className="level3-style container fluid">
         <Row id="main" lg={{ span: 12 }}>
@@ -339,7 +335,6 @@ class level3 extends React.Component {
                   disabled={this.state.hidden}
                   variant="outline-danger"
                   onClick={clear}
-                  href="/Level3"
                   block
                 >
                   clear
@@ -399,22 +394,7 @@ class level3 extends React.Component {
               <Gitgraph>{gitgraph => this.setState({ gitgraph })}</Gitgraph>
             </div>
             <div id="graphHide2">
-              <Gitgraph options={options}>
-                {baseTree => {
-                  const master = baseTree.branch("master");
-
-                  master.commit("Init");
-
-                  const development = baseTree.branch("development");
-
-                  development.commit("Some changes");
-                  development.commit("Some other changes");
-
-                  master.merge(development);
-
-                  this.setState({ goalTree: baseTree });
-                }}
-              </Gitgraph>
+              <img src={this.props.graph[1]} />
             </div>
           </Col>
         </Row>
@@ -425,8 +405,9 @@ class level3 extends React.Component {
 
 const mapStateToProps = state => {
   return {
+    graph: state.graph.graph.data,
     profile: state.firebase.profile
   };
 };
 
-export default connect(mapStateToProps)(level3);
+export default connect(mapStateToProps, null)(customLevel);

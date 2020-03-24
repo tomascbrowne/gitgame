@@ -1,0 +1,16 @@
+.loginContainer {
+  padding-top: 10px;
+  padding-left: 10px;
+}
+
+.inputBox {
+  width: initial;
+}
+
+#userEntry {
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}

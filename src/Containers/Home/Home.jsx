@@ -7,7 +7,7 @@ import Image from "react-bootstrap/Image";
 import logoImage from "./Menu-logo.jpg";
 import Container from "react-bootstrap/Container";
 
-class level3 extends Component {
+class home extends Component {
   state = {
     redirect: false,
     redirectPage: ""
@@ -42,10 +42,13 @@ class level3 extends Component {
       <Gitgraph options={options}>
         {tree0 => {
           const master = tree0.branch("master");
+          tree0._graph.author = "";
 
           master.commit({
             subject: "Level 1",
             renderMessage: renderMessage,
+            dotText: "1",
+            body: "click on the commit to enter the level!",
             onClick: this.onCommitClick.bind(this, "level1")
           });
 
@@ -54,22 +57,24 @@ class level3 extends Component {
           development.commit({
             subject: "Level 2",
             renderMessage: renderMessage,
+            dotText: "2",
             onClick: this.onCommitClick.bind(this, "level2")
           });
 
           development.commit({
             subject: "Level 3",
             renderMessage: renderMessage,
+            dotText: "3",
             onClick: this.onCommitClick.bind(this, "level3")
           });
 
           development.commit({
             subject: "Level 4",
             renderMessage: renderMessage,
+            dotText: "4",
             onClick: this.onCommitClick.bind(this, "level4")
           });
 
-          //master.merge(development, "");
           master.merge({
             branch: development,
             subject: "HEHE EXX DEE",
@@ -79,14 +84,20 @@ class level3 extends Component {
           master.commit({
             subject: "Level 5",
             renderMessage: renderMessage,
+            dotText: "5",
             onClick: this.onCommitClick.bind(this, "level5")
           });
 
           master.commit({
             subject: "Level 6",
             renderMessage: renderMessage,
+            renderTooltip: "click on the commit to enter the level!",
+            dotText: "6",
             onClick: this.onCommitClick.bind(this, "level6")
           });
+          console.log(tree0._graph.commits);
+          tree0._graph.commits[4].subject =
+            "Click on a commit to enter a level";
         }}
       </Gitgraph>
     );
@@ -104,11 +115,11 @@ class level3 extends Component {
       let page = "/" + this.state.redirectPage;
       return <Redirect to={page} />;
     }
-
+    const rowStyle = { height: "100%", paddingTop: "50px" };
     return (
       <>
         <Container>
-          <Row style={{ height: "100vh" }}>
+          <Row style={rowStyle}>
             <Col className="md-6 lg-6">{graphs.get("tree0")}</Col>
             <Col className="md-6 lg-6">
               <Image src={logoImage} />
@@ -120,4 +131,4 @@ class level3 extends Component {
   }
 }
 
-export default level3;
+export default home;

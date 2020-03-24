@@ -7,7 +7,7 @@ import Popup from "reactjs-popup";
 import { connect } from "react-redux";
 // eslint-disable @typescript-eslint/explicit-function-return-type
 
-class level3 extends React.Component {
+class level4 extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -24,37 +24,34 @@ class level3 extends React.Component {
   componentDidUpdate = () => {
     if (this.state.firstTime == true) {
       const ne = this.state.gitgraph.branch("master");
-      console.log(ne);
       this.setState({
         currentBranch: "master"
       });
       var current = this.state.branches;
       current.push(ne);
       this.setState({ branches: current });
-      console.log(this.state.branches);
 
-      ne._graph.author = "";
+      ne._graph.author = "user";
       ne.commit("init");
       this.setState({ firstTime: false });
 
       //hard coded setup
-      const merge = ["development", "master"];
+      const merge = ["development", "feature_branch"];
       this.state.goalTree._graph.commits[
         this.state.goalTree._graph.commits.length - 1
       ].merge = merge;
+
       console.log(this.state.goalTree);
     }
   };
 
   render() {
     const addCommit = message => {
-      console.log(this.state);
       if (this.state.currentBranch !== " ") {
         const branch = this.state.branches.find(
           b => b.name === this.state.currentBranch
         );
         if (branch) {
-          console.log(branch);
           branch._graph.author = this.props.profile.name;
           branch.commit(message);
           branch._graph.commits[branch._graph.commits.length - 1].merge = null;
@@ -339,7 +336,7 @@ class level3 extends React.Component {
                   disabled={this.state.hidden}
                   variant="outline-danger"
                   onClick={clear}
-                  href="/Level3"
+                  href="/Level4"
                   block
                 >
                   clear
@@ -403,14 +400,16 @@ class level3 extends React.Component {
                 {baseTree => {
                   const master = baseTree.branch("master");
 
-                  master.commit("Init");
+                  master.commit("Add tests");
 
                   const development = baseTree.branch("development");
 
-                  development.commit("Some changes");
-                  development.commit("Some other changes");
+                  development.commit("Init");
 
-                  master.merge(development);
+                  const feature = baseTree.branch("feature_branch");
+
+                  feature.commit("Added some cool stuff");
+                  feature.merge(development);
 
                   this.setState({ goalTree: baseTree });
                 }}
@@ -429,4 +428,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(level3);
+export default connect(mapStateToProps)(level4);

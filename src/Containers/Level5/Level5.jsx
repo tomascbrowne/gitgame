@@ -5,9 +5,8 @@ import "./level3-style.css";
 import { MDBContainer, MDBScrollbar } from "mdbreact";
 import Popup from "reactjs-popup";
 import { connect } from "react-redux";
-// eslint-disable @typescript-eslint/explicit-function-return-type
 
-class level3 extends React.Component {
+class level5 extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -24,16 +23,14 @@ class level3 extends React.Component {
   componentDidUpdate = () => {
     if (this.state.firstTime == true) {
       const ne = this.state.gitgraph.branch("master");
-      console.log(ne);
       this.setState({
         currentBranch: "master"
       });
       var current = this.state.branches;
       current.push(ne);
       this.setState({ branches: current });
-      console.log(this.state.branches);
 
-      ne._graph.author = "";
+      ne._graph.author = "user";
       ne.commit("init");
       this.setState({ firstTime: false });
 
@@ -42,19 +39,21 @@ class level3 extends React.Component {
       this.state.goalTree._graph.commits[
         this.state.goalTree._graph.commits.length - 1
       ].merge = merge;
+      const merge2 = ["feature", "development"];
+      this.state.goalTree._graph.commits[
+        this.state.goalTree._graph.commits.length - 2
+      ].merge = merge2;
       console.log(this.state.goalTree);
     }
   };
 
   render() {
     const addCommit = message => {
-      console.log(this.state);
       if (this.state.currentBranch !== " ") {
         const branch = this.state.branches.find(
           b => b.name === this.state.currentBranch
         );
         if (branch) {
-          console.log(branch);
           branch._graph.author = this.props.profile.name;
           branch.commit(message);
           branch._graph.commits[branch._graph.commits.length - 1].merge = null;
@@ -339,7 +338,7 @@ class level3 extends React.Component {
                   disabled={this.state.hidden}
                   variant="outline-danger"
                   onClick={clear}
-                  href="/Level3"
+                  href="/Level5"
                   block
                 >
                   clear
@@ -408,7 +407,13 @@ class level3 extends React.Component {
                   const development = baseTree.branch("development");
 
                   development.commit("Some changes");
-                  development.commit("Some other changes");
+
+                  const feature = baseTree.branch("feature");
+
+                  feature.commit("Some changes");
+                  feature.commit("Some changes");
+
+                  development.merge(feature);
 
                   master.merge(development);
 
@@ -429,4 +434,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(level3);
+export default connect(mapStateToProps)(level5);

@@ -3,11 +3,14 @@ import { Gitgraph, Mode } from "@gitgraph/react";
 import { Row, Col, Button } from "react-bootstrap";
 import "./level3-style.css";
 import { MDBContainer, MDBScrollbar } from "mdbreact";
-import Popup from "reactjs-popup";
 import { connect } from "react-redux";
+import { Link, Redirect } from "react-router-dom";
+import html2canvas from "html2canvas";
+import canvas2image from "canvas2image";
+import $ from "jquery";
 // eslint-disable @typescript-eslint/explicit-function-return-type
 
-class level3 extends React.Component {
+class createLevel extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -33,16 +36,9 @@ class level3 extends React.Component {
       this.setState({ branches: current });
       console.log(this.state.branches);
 
-      ne._graph.author = "";
+      ne._graph.author = "user";
       ne.commit("init");
       this.setState({ firstTime: false });
-
-      //hard coded setup
-      const merge = ["development", "master"];
-      this.state.goalTree._graph.commits[
-        this.state.goalTree._graph.commits.length - 1
-      ].merge = merge;
-      console.log(this.state.goalTree);
     }
   };
 
@@ -55,13 +51,13 @@ class level3 extends React.Component {
         );
         if (branch) {
           console.log(branch);
-          branch._graph.author = this.props.profile.name;
+          branch._graph.author = "user";
           branch.commit(message);
           branch._graph.commits[branch._graph.commits.length - 1].merge = null;
         }
       } else if (message) {
         // NONE THIS NEEDED ANYMORE
-        this.state.gitgraph._graph.author = this.props.profile.name;
+        this.state.gitgraph._graph.author = "user";
         this.state.gitgraph.commit(message);
         this.state.gitgraph._graph.commits[
           this.state.gitgraph._graph.commits.length - 1
@@ -101,63 +97,28 @@ class level3 extends React.Component {
         currentBranch: "",
         error: " ",
         hidden: false,
-        commands: [],
-        firstTime: false
+        commands: []
       });
     };
 
-    const handleCheck = () => {
-      const branch = this.state.gitgraph;
-      console.log(this.state.branches);
-      if (
-        this.state.goalTree._graph.commits.length ==
-        branch._graph.commits.length
-      ) {
-        for (const [
-          index,
-          value
-        ] of this.state.goalTree._graph.commits.entries()) {
-          if (value.refs[0] != branch._graph.commits[index].refs[0]) {
-            return alert("They don't match");
-          }
-          //merge comparison
-          if (
-            value.merge != null &&
-            branch._graph.commits[index].merge != null
-          ) {
-            if (
-              value.merge[0] != branch._graph.commits[index].merge[0] ||
-              value.merge[1] != branch._graph.commits[index].merge[1]
-            )
-              return alert("They don't match");
-          } else if (
-            (value.merge == null &&
-              branch._graph.commits[index].merge != null) ||
-            (value.merge != null && branch._graph.commits[index].merge == null)
-          ) {
-            return alert("They don't match");
-          }
-          //merge comparison
-        }
-        return alert("They DO match!");
-      } else {
-        return alert("They don't match");
-      }
-    };
-
-    function toggleDisplay() {
-      var x = document.getElementById("graphHide");
-      var y = document.getElementById("graphHide2");
-      if (x.style.display === "none") {
-        x.style.display = "block";
-        y.style.display = "none";
-      } else {
-        x.style.display = "none";
-        y.style.display = "block";
-      }
+    const handleHidden = () => {
       const newHidden = !this.state.hidden;
       this.setState({ hidden: newHidden });
-    }
+    };
+
+    const handleProps = () => {
+      const graph = document.querySelector("#graph2save");
+      var ne = [];
+      html2canvas(graph).then(function(canvas) {
+        console.log(canvas);
+        //saveAs(canvas.toDataURL(), "graph.png");
+
+        ne.push(canvas.toDataURL());
+      });
+      ne.push(this.state.gitgraph);
+
+      this.props.setGraph({ data: ne });
+    };
 
     const handleCommand = () => {
       this.setState({
@@ -276,7 +237,6 @@ class level3 extends React.Component {
       });
     };
 
-    const branches = this.state.branches;
     const options = {
       mode: Mode.Compact
     };
@@ -284,7 +244,6 @@ class level3 extends React.Component {
       width: "100%",
       height: "100px",
       maxHeight: "100px",
-      marginTop: "20px",
       padding: "10px",
       outlineStyle: "auto",
       outlineColor: "grey"
@@ -317,7 +276,6 @@ class level3 extends React.Component {
                 <center>
                   <p id="error">{this.state.error}</p>
                   <input
-                    id="commandInput"
                     type="text"
                     value={this.state.command}
                     onChange={handleChange("command")}
@@ -335,86 +293,23 @@ class level3 extends React.Component {
             </div>
             <Row id="clear_button">
               <Col>
-                <Button
-                  disabled={this.state.hidden}
-                  variant="outline-danger"
-                  onClick={clear}
-                  href="/Level3"
-                  block
-                >
+                <Button variant="outline-danger" onClick={clear} block>
                   clear
                 </Button>
               </Col>
               <Col>
-                <Button variant="outline-success" onClick={handleCheck} block>
-                  check answer
-                </Button>
+                <Link to="/CreateLevel/CustomLevel">
+                  <Button variant="outline-success" onClick={handleProps}>
+                    save
+                  </Button>
+                </Link>
               </Col>
             </Row>
-            <Button
-              onClick={toggleDisplay.bind(this)}
-              variant="warning"
-              id="show"
-            >
-              show goal
-            </Button>
-            <Popup
-              trigger={
-                <Button variant="warning" id="help">
-                  Help
-                </Button>
-              }
-              modal
-              closeOnDocumentClick
-            >
-              <div id="helpTop">
-                <span> Help Menu </span>
-              </div>
-              <br></br>
-              <a>Commit: git commit -m 'message'</a>
-              <br></br>
-              <a>
-                Branch: git branch {"<"}branch_name{">"}
-              </a>
-              <br></br>
-              <a>
-                Checkout: git checkout {"<"}branch_name{">"}{" "}
-              </a>
-              <br></br>
-              <a>
-                Merge: git merge {"<"}branch_name{">"}
-              </a>
-              <br></br>
-              <span> OR </span>
-              <br></br>
-              <a>
-                Merge: git merge {"<"}
-                branch_name{">"} {"<"}branch_name{">"}
-              </a>
-            </Popup>
           </Col>
 
           <Col align="center">
-            <div id="graphHide">
+            <div id="graph2save">
               <Gitgraph>{gitgraph => this.setState({ gitgraph })}</Gitgraph>
-            </div>
-            <div id="graphHide2">
-              <Gitgraph options={options}>
-                {baseTree => {
-                  const master = baseTree.branch("master");
-
-                  master.commit("Init");
-
-                  const development = baseTree.branch("development");
-
-                  development.commit("Some changes");
-                  development.commit("Some other changes");
-
-                  master.merge(development);
-
-                  this.setState({ goalTree: baseTree });
-                }}
-              </Gitgraph>
             </div>
           </Col>
         </Row>
@@ -429,4 +324,13 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(level3);
+function mapDispatchToProps(dispatch) {
+  console.log("dispatch method entered");
+  return {
+    setGraph: data => {
+      dispatch({ payload: data, type: "SET_GRAPH" });
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(createLevel);
