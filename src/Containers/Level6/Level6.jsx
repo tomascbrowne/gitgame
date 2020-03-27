@@ -7,9 +7,10 @@ import Popup from "reactjs-popup";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { setScore } from "../../Store/actions/scoreActions"
+import HashMap from "hashmap"
 // eslint-disable @typescript-eslint/explicit-function-return-type
 
-class level5 extends React.Component {
+class level6 extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -45,10 +46,14 @@ class level5 extends React.Component {
       this.state.goalTree._graph.commits[
         this.state.goalTree._graph.commits.length - 1
       ].merge = merge;
-      const merge2 = ["feature", "development"];
+      const merge2 = ["feature_2", "development"];
       this.state.goalTree._graph.commits[
         this.state.goalTree._graph.commits.length - 2
       ].merge = merge2;
+      const merge3 = ["feature", "development"];
+      this.state.goalTree._graph.commits[
+        this.state.goalTree._graph.commits.length - 3
+      ].merge = merge3;
       console.log(this.state.goalTree);
     }
   };
@@ -118,9 +123,14 @@ class level5 extends React.Component {
       });
     };
 
+    // Original check function that works for simpler graphs like in previous levels
+    // Due to the virus I couldn't get together user testing for the new function so
+    // I wasn't comfortable refactoring the old levels with handleCheck2 as I couldn't
+    // be certain enough that every avenue was checked
     const handleCheck = () => {
       const branch = this.state.gitgraph;
       console.log(this.state.branches);
+      var map = new HashMap();
       if (
         this.state.goalTree._graph.commits.length ==
         branch._graph.commits.length
@@ -157,6 +167,74 @@ class level5 extends React.Component {
         return alert("They don't match");
       }
     };
+
+    const handleCheck2 = () => {
+      const branch = this.state.gitgraph;
+      console.log(this.state.branches);
+      var goalMap = new HashMap();
+      var userMap = new HashMap();
+      if (
+        this.state.goalTree._graph.commits.length ==
+        branch._graph.commits.length
+      ) {
+        for (const [
+          index,
+          value
+        ] of this.state.goalTree._graph.commits.entries()) { 
+          if (
+            value.merge != null
+          ) {
+            const currentVal = [1, value.merge];
+            goalMap.set(index, currentVal);
+          }
+          else {
+            const currentVal = [1];
+            goalMap.set(index, currentVal);
+          }
+        }
+        for (const [
+          index,
+          value
+        ] of branch._graph.commits.entries()) { 
+          if (
+            value.merge != null
+          ) {
+            const currentVal = [1, value.merge];
+            userMap.set(index, currentVal);
+          }
+          else {
+            const currentVal = [1];
+            userMap.set(index, currentVal);
+          }
+        }
+        var end = 1;
+        goalMap.forEach(function(value, key) {
+          if(goalMap.get(key).length != userMap.get(key).length) {
+            end = 0;
+          }
+          else {
+            if (goalMap.get(key).length == 2) {
+            const userMerge = userMap.get(key);
+            if(value[1][0] != userMerge[1][0] || value[1][1] != userMerge[1][1]) {
+              end = 0;
+            }
+          } 
+        }
+      });
+
+      if(end == 1) {
+        this.setState({ complete: true});
+        return alert("They DO match!");
+      }
+      else {
+        return alert("They don't match");
+      }
+      }
+      else {
+        return alert("They don't match");
+      }
+
+    }
 
     function toggleDisplay() {
       var x = document.getElementById("graphHide");
@@ -402,14 +480,14 @@ class level5 extends React.Component {
                   disabled={this.state.hidden}
                   variant="outline-danger"
                   onClick={clear}
-                  href="/Level5"
+                  href="/Level6"
                   block
                 >
                   clear
                 </Button>
               </Col>
               <Col>
-                <Button variant="outline-success" onClick={handleCheck} block>
+                <Button variant="outline-success" onClick={handleCheck2} block>
                   check answer
                 </Button>
               </Col>
@@ -473,11 +551,15 @@ class level5 extends React.Component {
                   development.commit("Some changes");
 
                   const feature = baseTree.branch("feature");
+                  const feature_2 = baseTree.branch("feature_2");
 
+                  feature_2.commit("Some changes");
                   feature.commit("Some changes");
-                  feature.commit("Some changes");
-
+                  feature_2.commit("Some changes");
                   development.merge(feature);
+
+                  
+                  development.merge(feature_2);
 
                   master.merge(development);
 
@@ -506,4 +588,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(level5);
+export default connect(mapStateToProps, mapDispatchToProps)(level6);

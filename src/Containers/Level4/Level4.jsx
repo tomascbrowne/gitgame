@@ -5,6 +5,8 @@ import "./level3-style.css";
 import { MDBContainer, MDBScrollbar } from "mdbreact";
 import Popup from "reactjs-popup";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+import { setScore } from "../../Store/actions/scoreActions"
 // eslint-disable @typescript-eslint/explicit-function-return-type
 
 class level4 extends React.Component {
@@ -17,21 +19,24 @@ class level4 extends React.Component {
       goalTree: null,
       hidden: false,
       commands: [],
-      firstTime: true
+      firstTime: true,
+      complete: false
     };
   }
 
   componentDidUpdate = () => {
     if (this.state.firstTime == true) {
       const ne = this.state.gitgraph.branch("master");
+      console.log(ne);
       this.setState({
         currentBranch: "master"
       });
       var current = this.state.branches;
       current.push(ne);
       this.setState({ branches: current });
+      console.log(this.state.branches);
 
-      ne._graph.author = "user";
+      ne._graph.author = "";
       ne.commit("init");
       this.setState({ firstTime: false });
 
@@ -41,17 +46,22 @@ class level4 extends React.Component {
         this.state.goalTree._graph.commits.length - 1
       ].merge = merge;
 
-      console.log(this.state.goalTree);
     }
   };
 
+  handleProps = () => {
+    this.props.setScore();
+  }
+
   render() {
     const addCommit = message => {
+      console.log(this.state);
       if (this.state.currentBranch !== " ") {
         const branch = this.state.branches.find(
           b => b.name === this.state.currentBranch
         );
         if (branch) {
+          console.log(branch);
           branch._graph.author = this.props.profile.name;
           branch.commit(message);
           branch._graph.commits[branch._graph.commits.length - 1].merge = null;
@@ -68,8 +78,9 @@ class level4 extends React.Component {
 
     const addBranch = branchName => {
       if (this.state.branches.map(b => b.name).includes(branchName)) return;
+      const from = branches.find(from => from.name === this.state.currentBranch);
       this.setState(state => ({
-        branches: [...state.branches, this.state.gitgraph.branch(branchName)]
+        branches: [...state.branches, from.branch(branchName)]
       }));
     };
 
@@ -136,6 +147,7 @@ class level4 extends React.Component {
           }
           //merge comparison
         }
+        this.setState({ complete: true});
         return alert("They DO match!");
       } else {
         return alert("They don't match");
@@ -156,13 +168,15 @@ class level4 extends React.Component {
       this.setState({ hidden: newHidden });
     }
 
+    var errorMsg = " ";
     const handleCommand = () => {
-      this.setState({
-        commands: this.state.commands.concat(this.state["command"])
-      });
+      if(!this.state["command"]) {
+        return;
+      }
       const coms = this.state["command"].split(" ");
       if (coms[0] !== "git") {
-        alert(coms[0] + "is not recognised");
+        errorMsg = "Not recognised, start a command with git";
+        this.setState({ error: errorMsg });
       }
       coms.slice(1).forEach((com, index, array) => {
         switch (com) {
@@ -173,6 +187,9 @@ class level4 extends React.Component {
               );
             }
             this.setState({ error: " " });
+            this.setState({
+              commands: this.state.commands.concat(this.state["command"])
+            });
             return;
           }
           case "commit": {
@@ -182,8 +199,15 @@ class level4 extends React.Component {
                 string += " " + array[index + i];
               }
               addCommit(string);
-            }
             this.setState({ error: " " });
+            this.setState({
+              commands: this.state.commands.concat(this.state["command"])
+            });
+            }
+            else {
+              errorMsg = "commit must be followed by -m";
+              this.setState({ error: errorMsg });
+            }
             return;
           }
           case "checkout": {
@@ -200,8 +224,12 @@ class level4 extends React.Component {
                   array[index + 1].length - 1
                 )
               });
+              this.setState({ error: " " });
+              this.setState({
+                commands: this.state.commands.concat(this.state["command"])
+              });
             } else {
-              var errorMsg = "branch " + array[index + 1] + " does not exist";
+              errorMsg = "branch " + array[index + 1] + " does not exist";
               this.setState({ error: errorMsg });
               console.log(errorMsg);
             }
@@ -221,6 +249,9 @@ class level4 extends React.Component {
                 this.state.currentBranch
               );
               this.setState({ error: " " });
+              this.setState({
+                commands: this.state.commands.concat(this.state["command"])
+              });
             } else if (
               array[index + 1] &&
               array[index + 2] &&
@@ -237,26 +268,29 @@ class level4 extends React.Component {
                 array[index + 1].substring(1, array[index + 1].length - 1)
               );
               this.setState({ error: " " });
+              this.setState({
+                commands: this.state.commands.concat(this.state["command"])
+              });
             } else {
               if (array[index + 1] && !array[index + 2]) {
-                var errorMsg = "branch " + array[index + 1] + " does not exist";
+                errorMsg = "branch " + array[index + 1] + " does not exist";
               } else if (array[index + 1] && array[index + 2]) {
                 if (
                   checkBranch(
                     array[index + 1].substring(1, array[index + 1].length - 1)
                   )
                 ) {
-                  var errorMsg =
+                  errorMsg =
                     "branch " + array[index + 1] + " does not exist";
                 } else if (
                   checkBranch(
                     array[index + 2].substring(1, array[index + 2].length - 1)
                   )
                 ) {
-                  var errorMsg =
+                  errorMsg =
                     "branch " + array[index + 1] + " does not exist";
                 } else {
-                  var errorMsg =
+                  errorMsg =
                     "branch " +
                     array[index + 1] +
                     " does not exist and branch " +
@@ -287,6 +321,48 @@ class level4 extends React.Component {
       outlineColor: "grey"
     };
 
+    var completeButton = <><p id="error">{this.state.error}</p>
+    <input
+      id="commandInput"
+      type="text"
+      value={this.state.command}
+      onChange={handleChange("command")}
+    />
+    <button
+      id="commandButton"
+      variant="dark"
+      size="sm"
+      disabled={this.state.hidden}
+    >
+      Enter Command
+    </button>
+    </>;
+
+    if(this.state.complete) {
+      if(this.props.auth.uid) {
+        completeButton = <Link to="/">
+       <Button disabled={false}
+             onClick={this.handleProps}
+             variant="outline-success"
+              block
+           >
+            Complete Level !
+        </Button>
+       </Link>
+      }
+      else {
+        completeButton = <Link to="/">
+       <Button disabled={true}
+             onClick={this.handleProps}
+             variant="outline-danger"
+              block
+           >
+            Must be logged in to save score 
+        </Button>
+       </Link>
+      }
+    }
+
     return (
       <div id="content" className="level3-style container fluid">
         <Row id="main" lg={{ span: 12 }}>
@@ -312,21 +388,7 @@ class level4 extends React.Component {
                 }}
               >
                 <center>
-                  <p id="error">{this.state.error}</p>
-                  <input
-                    id="commandInput"
-                    type="text"
-                    value={this.state.command}
-                    onChange={handleChange("command")}
-                  />
-                  <button
-                    id="commandButton"
-                    variant="dark"
-                    size="sm"
-                    disabled={this.state.hidden}
-                  >
-                    Enter Command
-                  </button>
+                  {completeButton}
                 </center>
               </form>
             </div>
@@ -422,10 +484,19 @@ class level4 extends React.Component {
   }
 }
 
+function mapDispatchToProps(dispatch) {
+  console.log("entering method disp");
+  return {
+    setScore: score => dispatch(setScore())
+  }
+}
+
 const mapStateToProps = state => {
   return {
+    auth: state.firebase.auth,
     profile: state.firebase.profile
   };
 };
 
-export default connect(mapStateToProps)(level4);
+export default connect(mapStateToProps, mapDispatchToProps)(level4);
+

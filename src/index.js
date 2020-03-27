@@ -22,10 +22,13 @@ const store = createStore(
       userProfile: "users",
       attachAuthIsReady: true
     }),
-    reduxFirestore(fbConfig),
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    reduxFirestore(fbConfig)
   )
 );
+
+// For redux store debugging ->
+// window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+// don't leave in for deployment as users will need chrome extention to run it (>00)>
 
 store.subscribe(() => console.log(store.getState()));
 

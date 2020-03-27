@@ -1,9 +1,12 @@
 import React, { Component } from "react";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Button } from "react-bootstrap";
 import OptionButton from "../../components/optionSelectionButton/optionSelectionButton";
 import Scenario from "../../Data/Scenario1.json";
 import NarativeBox from "../../components/narativeBox/narativeBox";
 import { Gitgraph, Mode } from "@gitgraph/react";
+import { connect } from "react-redux";
+import { setScore } from "../../Store/actions/scoreActions"
+import { Link } from "react-router-dom";
 
 class level1 extends Component {
   constructor(props) {
@@ -26,6 +29,10 @@ class level1 extends Component {
     image += ID;
     this.setState({ tree: image, currentNodeId: current });
   };
+
+  handleProps = () => {
+    this.props.setScore();
+  }
 
   graphs = new Map();
 
@@ -290,6 +297,67 @@ class level1 extends Component {
     );
     this.graphs.set("tree026", tree026);
 
+    const tree034 = (
+      <Gitgraph options={options}>
+        {tree034 => {
+          const master = tree034.branch("master");
+
+          master.commit("Add tests");
+
+          const development = tree034.branch("development");
+
+          development.commit("Init");
+
+          const feature = tree034.branch("feature_branch");
+
+          feature.commit("Added some cool stuff");
+          feature.commit("Added some other cool stuff");
+
+          development.merge(feature, "Merged in feature");
+
+          const customTagStyle = {
+            bgColor: "green",
+            strokeColor: "green",
+            borderRadius: 0,
+            pointerWidth: 0
+          };
+          development.tag({
+            name: "Success!",
+            style: customTagStyle
+          });
+          this.setState({ treeObject: tree034 });
+        }}
+      </Gitgraph>
+    );
+    this.graphs.set("tree034", tree034);
+    
+    const tree037 = (
+      <Gitgraph options={options}>
+        {tree037 => {
+          const master = tree037.branch("master");
+
+          master.commit("Add tests");
+
+          const development = tree037.branch("development");
+
+          development.commit("Init");
+
+          const customTagStyle = {
+            bgColor: "red",
+            strokeColor: "red",
+            borderRadius: 0,
+            pointerWidth: 0
+          };
+          development.tag({
+            name: "Branch deleted!",
+            style: customTagStyle
+          });
+          this.setState({ treeObject: tree037 });
+        }}
+      </Gitgraph>
+    );
+    this.graphs.set("tree037", tree037);
+
     return this.graphs;
   };
 
@@ -328,12 +396,49 @@ class level1 extends Component {
       );
     }
 
+    //Score button logic
+    const success = ["tree026", "tree014", "tree024", "tree034"];
+    var completeButton = null;
+    if(success.includes(this.state.tree)) {
+      if(this.props.auth.uid) {
+        completeButton = <Link to="/">
+       <Button disabled={false}
+             onClick={this.handleProps}
+             variant="outline-success"
+              block
+           >
+            Complete Level !
+        </Button>
+       </Link>
+      }
+      else {
+        completeButton = <Link to="/">
+       <Button disabled={true}
+             onClick={this.handleProps}
+             variant="outline-danger"
+              block
+           >
+            Must be logged in to save score 
+        </Button>
+       </Link>
+      }
+    }
+
     console.log(this.state.treeObject);
     console.log("DIV:" + this.state.tree);
+    if(this.state.tree == "tree030") {
+      this.setState({ currentNodeId: 0, tree: "tree0", treeObject:null})
+    }
+    const colGraph = {
+      alignItems: "center"
+    }
+    const rowStlye = {
+      width: "100%"
+    }
     return (
       <>
-        <Row className="d-flex flex-row align-self-center p-2 h-100">
-          <Col className="d-flex flex-column align-self-center">
+        <Row className="d-flex flex-row align-self-center p-2 h-100" style={rowStlye}>
+          <Col className="d-flex flex-column align-self-center" style={colGraph}>
             {this.graphs.get(this.state.tree)}
             {this.state.tree}
             {/* <button onClick={this.clearMethod}>force clear</button> */}
@@ -344,6 +449,14 @@ class level1 extends Component {
               text={vertices.nodes[this.state.currentNodeId].Description}
             />
             {buttons}
+            <Button
+                  variant="outline-danger"
+                  href="/Level1"
+                  block
+                >
+                  Restart
+            </Button>
+            {completeButton}
           </Col>
         </Row>
       </>
@@ -351,4 +464,17 @@ class level1 extends Component {
   }
 }
 
-export default level1;
+function mapDispatchToProps(dispatch) {
+  console.log("entering method disp");
+  return {
+    setScore: score => dispatch(setScore())
+  }
+}
+
+const mapStateToProps = state => {
+  return {
+    auth: state.firebase.auth
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(level1);

@@ -1,21 +1,22 @@
-export const addScore = score => {
+import firebase from "firebase";
+
+export const setScore = score => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
-    const firestore = getFirestore();
-    const profile = getState().firebase.profile;
-    const authId = getState().firbase.auth.uid;
-    const newScore = getState().firebase.profile.score;
+    const firestore = firebase.firestore();
+    const authId = getState().firebase.auth.uid;
+    var newScore = getState().firebase.profile.score;
     newScore += 10;
     firestore
       .collection("users")
-      .doc("score")
-      .set({
+      .doc(authId)
+      .update({
         score: newScore
       })
       .then(() => {
-        dispatch({ type: ADD_SCORE, newScore });
+        dispatch({ type: "SET_SCORE" , newScore });
       })
       .catch(err => {
-        dispatch({ type: "ADD_SCORE_ERROR", err });
+        dispatch({ type: "SET_SCORE_ERROR", err });
       });
   };
 };

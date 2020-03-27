@@ -52,7 +52,7 @@
     },
     {
       "ID": 5,
-      "Description": "Bad choice",
+      "Description": "Bad choice, with the current git workflow changes should be merged into development never directly into master as this is bad practice",
       "Edges": [],
       "Image": "tree025"
     },
@@ -64,8 +64,9 @@
     },
     {
       "ID": 7,
-      "Description": "why?!",
-      "Edges": []
+      "Description": "why?! Probably not the best of ideas",
+      "Edges": [],
+      "Image": "tree037"
     }
   ]
 }

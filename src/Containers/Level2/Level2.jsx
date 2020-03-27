@@ -1,9 +1,12 @@
 import React, { Component } from "react";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Button } from "react-bootstrap";
 import OptionButton from "../../components/optionSelectionButton/optionSelectionButton";
 import Scenario from "../../Data/Scenario2.json";
 import NarativeBox from "../../components/narativeBox/narativeBox";
 import { Gitgraph, Mode } from "@gitgraph/react";
+import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import { setScore } from "../../Store/actions/scoreActions"
 
 class level2 extends Component {
   constructor(props) {
@@ -20,13 +23,17 @@ class level2 extends Component {
   optionButtonClickHandler = ID => {
     console.log("Button clicked");
     const clearTree = this.state.treeObject;
-    clearTree.clear();
+    //clearTree.clear();
 
     const current = ID;
-    let image = this.state.tree;
-    image += ID;
+    const vertices = JSON.parse(JSON.stringify(Scenario));
+    const image = vertices.nodes[current].Image;
     this.setState({ tree: image, currentNodeId: current });
   };
+
+  handleProps = () => {
+    this.props.setScore();
+  }
 
   graphs = new Map();
 
@@ -36,7 +43,6 @@ class level2 extends Component {
     };
 
     const tree0 = (
-      <>
         <Gitgraph options={options}>
           {baseTree => {
             const development = baseTree.branch("development");
@@ -52,7 +58,6 @@ class level2 extends Component {
             this.setState({ treeObject: baseTree });
           }}
         </Gitgraph>
-      </>
     );
     this.graphs.set("tree0", tree0);
 
@@ -70,7 +75,7 @@ class level2 extends Component {
             feature.commit("Added some cool stuff");
             feature.commit("Added some other cool stuff");
 
-            feature.merge(development, "");
+            development.merge(feature, "");
 
             this.setState({ treeObject: tree01 });
           }}
@@ -120,49 +125,102 @@ class level2 extends Component {
     );
     this.graphs.set("tree03", tree03);
 
-    const correct = (
-      <Gitgraph options={options}>
-        {baseTree => {
-          const development = baseTree.branch("correct");
+    const tree01p = (
+      
+        <Gitgraph options={options}>
+          {baseTree => {
+            const development = baseTree.branch("development");
 
-          const customTagStyle = {
-            bgColor: "green",
-            strokeColor: "green",
-            borderRadius: 0,
-            pointerWidth: 0
-          };
-          development.tag({
-            name: "Correct!",
-            style: customTagStyle
-          });
+            development.commit("Add tests");
+            development.commit("Add tests 2");
 
-          this.setState({ treeObject: correct });
-        }}
-      </Gitgraph>
+            const feature = development.branch("feature");
+
+            feature.commit("Added some cool stuff");
+            feature.commit("Added some other cool stuff");
+
+            development.merge(feature, "");
+
+            const customTagStyle = {
+              bgColor: "green",
+              strokeColor: "green",
+              borderRadius: 0,
+              pointerWidth: 0
+            };
+            development.tag({
+              name: "Correct!",
+              style: customTagStyle
+            });
+
+            this.setState({ treeObject: tree01p });
+          }}
+        </Gitgraph>
+      
     );
-    this.graphs.set("correct", correct);
+    this.graphs.set("tree01p", tree01p);
 
-    const incorrect = (
-      <Gitgraph options={options}>
-        {baseTree => {
-          const development = baseTree.branch("incorrect");
+    const tree02p = (
+      
+        <Gitgraph options={options}>
+          {baseTree => {
+            const development = baseTree.branch("development");
 
-          const customTagStyle = {
-            bgColor: "red",
-            strokeColor: "red",
-            borderRadius: 0,
-            pointerWidth: 0
-          };
-          development.tag({
-            name: "incorrect!",
-            style: customTagStyle
-          });
+            development.commit("Add tests");
+            development.commit("Add tests 2");
 
-          this.setState({ treeObject: incorrect });
-        }}
-      </Gitgraph>
+            development.commit("Added some cool stuff");
+            development.commit("Added some other cool stuff");
+
+            const customTagStyle = {
+              bgColor: "red",
+              strokeColor: "red",
+              borderRadius: 0,
+              pointerWidth: 0
+            };
+            development.tag({
+              name: "Incorrect",
+              style: customTagStyle
+            });
+
+            this.setState({ treeObject: tree02p });
+          }}
+        </Gitgraph>
+      
     );
-    this.graphs.set("incorrect", incorrect);
+    this.graphs.set("tree02p", tree02p);
+
+    const tree03p = (
+     
+        <Gitgraph options={options}>
+          {baseTree => {
+            const development = baseTree.branch("development");
+
+            development.commit("Add tests");
+            development.commit("Add tests 2");
+
+            const feature = development.branch("feature");
+
+            feature.commit("Added some cool stuff");
+            feature.commit("Added some other cool stuff");
+            feature.commit("Merge?");
+
+            const customTagStyle = {
+              bgColor: "red",
+              strokeColor: "red",
+              borderRadius: 0,
+              pointerWidth: 0
+            };
+            feature.tag({
+              name: "Incorrect",
+              style: customTagStyle
+            });
+
+            this.setState({ treeObject: tree03p });
+          }}
+        </Gitgraph>
+     
+    );
+    this.graphs.set("tree03p", tree03p);
 
     return this.graphs;
   };
@@ -190,20 +248,11 @@ class level2 extends Component {
       i++
     ) {
       buttons.push(
-        <div>
+        <div key={i}>
           <OptionButton
-            inHover={this.onHoverIn.bind(
-              this,
-              vertices.nodes[this.state.currentNodeId].Edges[i].Image
-            )}
-            outHover={this.onHoverOut.bind(
-              this,
-              vertices.nodes[this.state.currentNodeId].Edges[i].Image
-            )}
             click={this.optionButtonClickHandler.bind(
               this,
-              vertices.nodes[this.state.currentNodeId].Edges[i].ID,
-              vertices
+              vertices.nodes[this.state.currentNodeId].Edges[i].ID
             )}
             text={vertices.nodes[this.state.currentNodeId].Edges[i].OptionText}
           />
@@ -211,13 +260,48 @@ class level2 extends Component {
       );
     }
 
+    //Score button logic
+    const success = ["tree01p"];
+    var completeButton = null;
+    if(success.includes(this.state.tree)) {
+      if(this.props.auth.uid) {
+        completeButton = <Link to="/">
+       <Button disabled={false}
+             onClick={this.handleProps}
+             variant="outline-success"
+              block
+           >
+            Complete Level !
+        </Button>
+       </Link>
+      }
+      else {
+        completeButton = <Link to="/">
+       <Button disabled={true}
+             onClick={this.handleProps}
+             variant="outline-danger"
+              block
+           >
+            Must be logged in to save score 
+        </Button>
+       </Link>
+      }
+    }
+
     console.log(this.state.treeObject);
     console.log("DIV:" + this.state.tree);
+    const colGraph = {
+      alignItems: "center"
+    }
+    const rowStlye = {
+      width: "100%"
+    }
     return (
       <>
-        <Row className="d-flex flex-row align-self-center p-2 h-100">
-          <Col className="d-flex flex-column align-self-center">
+        <Row className="d-flex flex-row align-self-center p-2 h-100" style={rowStlye}>
+          <Col className="d-flex flex-column align-self-center" style={colGraph}>
             {this.graphs.get(this.state.tree)}
+            {this.state.tree}
           </Col>
 
           <Col>
@@ -225,6 +309,14 @@ class level2 extends Component {
               text={vertices.nodes[this.state.currentNodeId].Description}
             />
             {buttons}
+            <Button
+                  variant="outline-danger"
+                  href="/Level2"
+                  block
+                >
+                  Restart
+            </Button>
+            {completeButton}
           </Col>
         </Row>
       </>
@@ -232,4 +324,17 @@ class level2 extends Component {
   }
 }
 
-export default level2;
+function mapDispatchToProps(dispatch) {
+  console.log("entering method disp");
+  return {
+    setScore: score => dispatch(setScore())
+  }
+}
+
+const mapStateToProps = state => {
+  return {
+    auth: state.firebase.auth
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(level2);

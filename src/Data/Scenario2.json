@@ -12,21 +12,39 @@
     },
     {
       "ID": 1,
-      "Description": "The “no-fast-forward” merge option preserves the branch history and creates a merge commit",
-      "Edges": [],
+      "Description": "Do you wish to proceed with this choice?",
+      "Edges": [ { "OptionText": "Proceed", "ID": 4, "Image": "tree01p"} ],
       "Image": "tree01"
     },
     {
       "ID": 2,
-      "Description": "The “fast-forward” (“–ff”) merge option is the default merge option (when possible). In the git log, the branch history for this merge will not be available anymore, rewrites the git history!",
-      "Edges": [],
+      "Description": "Do you wish to proceed with this choice?",
+      "Edges": [ { "OptionText": "Proceed", "ID": 5, "Image": "tree02p"} ],
       "Image": "tree02"
     },
     {
       "ID": 3,
+      "Description": "Do you wish to proceed with this choice?",
+      "Edges": [ { "OptionText": "Proceed", "ID": 6, "Image": "tree03p"} ],
+      "Image": "tree03"
+    },
+    {
+      "ID": 4,
+      "Description": "The “no-fast-forward” merge option preserves the branch history and creates a merge commit",
+      "Edges": [],
+      "Image": "tree01p"
+    },
+    {
+      "ID": 5,
+      "Description": "The “fast-forward” (“–ff”) merge option is the default merge option (when possible). In the git log, the branch history for this merge will not be available anymore, rewrites the git history!",
+      "Edges": [],
+      "Image": "tree02p"
+    },
+    {
+      "ID": 6,
       "Description": "You are merging, not creating and pushing a new commit to the same branch?",
       "Edges": [],
-      "Image": "tree03"
+      "Image": "tree03p"
     }
   ]
 }
